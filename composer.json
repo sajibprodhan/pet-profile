@@ -1,0 +1,23 @@
+{
+    "name": "sajib/sajib-plugin",
+    "description": "Awesome starter plugin example",
+    "type": "project",
+    "license": "GPL-3.0",
+    "authors": [
+        {
+            "name": "sajib",
+            "email": "sajibprodhan@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "mpdf/mpdf": "dev-development",
+        "mpdf/qrcode": "dev-development"
+    },
+    "autoload": {
+        "psr-4": {"Inc\\": "./inc"},
+        "files": [
+            "./inc/functions.php"
+        ]
+    }
+}
