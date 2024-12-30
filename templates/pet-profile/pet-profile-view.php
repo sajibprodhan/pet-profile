@@ -125,6 +125,7 @@
     $query       = $wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $pet_profile_id );
     $pet_profile = $wpdb->get_row( $query );
 
+
     // If the pet profile exists, display the pet profile
     if ( $pet_profile ) {
         ?>
@@ -209,5 +210,5 @@
         <?php
     }
 
-get_footer();
+
 ?>

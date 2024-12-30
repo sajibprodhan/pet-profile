@@ -28,9 +28,13 @@ class Pet_Profile_Controller extends Base_Controller {
         add_action( 'admin_post_nopriv_download_pet', [$this, 'download_pet_profile_pdf'] );
 
 
+        // add_action( 'template_redirect', [$this,'page_404'] );
+
+
+
         add_filter('query_vars', [$this,'custom_pet_profile_query_vars']);
         add_action('init', [$this,'custom_pet_profile_rewrite_rule']);
-        add_action('template_include', [$this,'custom_pet_profile_template']);
+        add_action('template_redirect', [$this,'custom_pet_profile_template']);
 
         $this->settings->add_pages( $this->pages )->register();
     }
@@ -295,6 +299,7 @@ class Pet_Profile_Controller extends Base_Controller {
     }
 
 
+
     public function custom_pet_profile_rewrite_rule() {
         add_rewrite_rule(
             '^pet-profile/([0-9]+)/?$',
@@ -303,23 +308,48 @@ class Pet_Profile_Controller extends Base_Controller {
         );
     }
 
+
     public function custom_pet_profile_query_vars($vars) {
         $vars[] = 'pet_profile_id';
         return $vars;
     }
 
-    public function custom_pet_profile_template($template) {
-        if (get_query_var('pet_profile_id')) {
-            $custom_template = include $this->plugin_path . 'templates/pet-profile/pet-profile-view.php';
-            if (file_exists($custom_template)) {
-                return $custom_template;
-            }
+    public function custom_pet_profile_template() {
+        $id = get_query_var('pet_profile_id');
+        if ($id && is_numeric($id)) {
+            get_header();
+            include $this->plugin_path . 'templates/pet-profile/pet-profile-view.php';
+            get_footer(); 
+            exit; 
+        } else {
+            wp_die('Invalid ID. The ID must be numeric.');
         }
-        return $template;
     }
 
 
 
+
+    public function page_404() {
+        $pet_profile_id = get_query_var( 'pet_profile_id' );
+
+        // if ( ! $pet_profile_id ) {
+        //     status_header( 404 );
+        //     include $this->plugin_path . 'templates/pet-profile/404.php';
+        //     exit;
+        // }
+
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'giopio_pet_profile';
+
+        $query = $wpdb->prepare( "SELECT COUNT(*) FROM $table_name WHERE pet_profile_id = %d", $pet_profile_id );
+        $exists = $wpdb->get_var( $query );
+
+        if ( ! $exists ) {
+            status_header( 404 );
+            include $this->plugin_path . 'templates/pet-profile/404.php';
+            exit;
+        }
+    }
 
 
 }
