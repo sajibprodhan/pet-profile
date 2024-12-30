@@ -55,7 +55,7 @@
                 <?php
                     if ( $results ) {
                             foreach ( $results as $profile ) { 
-                                $url = site_url( "/pet-profile-edit/".$profile['id'] );
+                                $url = site_url( "/pet-profile/".$profile['id'] );
                                 $qrCode = new QrCode( $url );  
                                 $output = new Output\Svg();
                             ?>
@@ -77,11 +77,11 @@
                                 <td><?php echo esc_html( $profile['vaccine_date'] ); ?></td>
                                 <td><?php echo esc_html( $profile['vaccine_name_2'] ); ?></td>
                                 <td><?php echo esc_html( $profile['vaccine_date_2'] ); ?></td>
-                                <td><?php echo $this->get_gallery_column( $profile['gallery'] ); ?></td>
+                                <td><?php // echo $this->get_gallery_column( $profile['gallery'] ); ?></td>
                                 <td>
                                     <span class="qrCodeContainers"></span>
-                                    <!-- <a href="<?php echo admin_url( 'admin.php?page=edit_pet_profile&id=' . $profile['id'] ); ?>">Edit</a> | -->
-                                    <a href="<?php echo admin_url( 'admin.php?page=pet_profile&id=' . $profile['id'] );?>">Edit</a>
+                                    <!-- <a href="<?php echo admin_url( 'admin.php?page=edit_pet_profile&action=edit&id=' . $profile['id'] ); ?>">Edit</a> | -->
+                                    <a href="<?php echo admin_url( 'admin.php?page=pet_profile&action=edit&id=' . $profile['id'] );?>">Edit</a>
 
                                     <a href="<?php echo admin_url( 'admin-post.php?action=download_pet&id=' . $profile['id'] ); ?>" target="_blank">Download</a>
 
