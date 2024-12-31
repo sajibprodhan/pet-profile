@@ -66,10 +66,10 @@
                 <td><input type="date" name="vaccine_date_2" id="vaccine_date_2" value="<?php echo esc_attr($profile['vaccine_date_2']); ?>" class="regular-text"></td>
             </tr>
 
-            <tr>
+            <!-- <tr>
                 <th><label for="gallery"><?php _e('Gallery', 'pet-profile'); ?></label></th>
                 <td><input multiple type="file" name="gallery[]" id="gallery"  class="regular-text"></td>
-            </tr>
+            </tr> -->
             
         </table>
         

@@ -115,7 +115,6 @@ class Pet_Profile_Controller extends Base_Controller {
                 'vaccine_date'   => sanitize_text_field( $_POST['vaccine_date'] ),
                 'vaccine_name_2' => sanitize_text_field( $_POST['vaccine_name_2'] ),
                 'vaccine_date_2' => sanitize_text_field( $_POST['vaccine_date_2'] ),
-                'gallery'        => isset( $_POST['gallery'] ) ? json_encode( array_map( 'sanitize_text_field', $_POST['gallery'] ) ) : '',
             ];
 
             $wpdb->update( $table_name, $data, ['id' => $profile_id] );
@@ -250,7 +249,6 @@ class Pet_Profile_Controller extends Base_Controller {
         $pet_gallery = isset($_POST['gallery']) ? $_POST['gallery'] : null;
         $gallery_value = empty($pet_gallery) ? null : json_encode($pet_gallery);
 
-
         global $wpdb;
         $table_name = $wpdb->prefix . 'giopio_pet_profile';
         $pet_count  = (int) $_POST['pet_count'];
@@ -314,14 +312,182 @@ class Pet_Profile_Controller extends Base_Controller {
     }
 
     public function custom_pet_profile_template() {
-        $id = get_query_var('pet_profile_id');
-        if ($id && is_numeric($id)) {
-            get_header();
-            include $this->plugin_path . 'templates/pet-profile/pet-profile-view.php';
-            get_footer(); 
-            exit; 
+        if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
+            $this->handle_pet_profile_submission();
+            return;
         }
+
+        $pet_profile_id = get_query_var('pet_profile_id');
+        $pet_profile = $this->get_pet_profile($pet_profile_id);
+
+        if (isset($pet_profile_id) && !empty($pet_profile_id)) {
+            if (empty($pet_profile)) {
+                $this->show_404();
+            } else {
+                $this->display_pet_profile($pet_profile);
+            }
+        }
+
+
     }
+
+    private function handle_pet_profile_submission() {
+        
+        if ( ! function_exists( 'wp_handle_upload' ) ) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+        }
+        // Sanitize form inputs
+        $pet_profile_id = get_query_var('pet_profile_id');
+        $data = [
+            'user_id'         => get_current_user_id(),
+            'name'            => sanitize_text_field($_POST['pet_name'] ?? ''),
+            'age'             => intval($_POST['pet_age'] ?? 0),
+            'gender'          => sanitize_text_field($_POST['pet_gender'] ?? ''),
+            'owner_name'      => sanitize_text_field($_POST['pet_owner_name'] ?? ''),
+            'mobile'          => sanitize_text_field($_POST['pet_mobile'] ?? ''),
+            'location'        => sanitize_text_field($_POST['pet_location'] ?? ''),
+            'facebook'        => sanitize_text_field($_POST['pet_facebook'] ?? ''),
+            'whatsapp_id'     => sanitize_text_field($_POST['pet_whatsapp'] ?? ''),
+            'vaccine_name'    => sanitize_text_field($_POST['pet_vaccine_name'] ?? ''),
+            'vaccine_date'    => sanitize_text_field($_POST['pet_vaccine_date'] ?? ''),
+            'vaccine_name_2'  => sanitize_text_field($_POST['pet_vaccine_name_2'] ?? ''),
+            'vaccine_date_2'  => sanitize_text_field($_POST['pet_vaccine_date_2'] ?? ''),
+            'about'           => sanitize_textarea_field($_POST['pet_about'] ?? ''),
+            'cover_photo'     => $this->handle_file_upload('pet_cover_photo', $pet_profile_id),
+            'profile_picture' => $this->handle_file_upload('profile_picture', $pet_profile_id),
+            'gallery'         => $this->handle_file_uploads('pet_gallery', $pet_profile_id),
+        ];
+
+        // Insert or update the pet profile
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'giopio_pet_profile';
+        
+        if (isset($pet_profile_id) && $pet_profile_id) {
+            $this->update_pet_profile($table_name, $data , $pet_profile_id);
+        } else {
+            $pet_profile_id = $this->insert_pet_profile($table_name, $data,);
+        }
+
+        // Redirect to the pet profile view page
+        wp_redirect(home_url("/pet-profile/{$pet_profile_id}"));
+        exit;
+    }
+
+    private function handle_file_uploads($field_name, $pet_profile_id = null) {
+        if (isset($_FILES[$field_name]) && !empty($_FILES[$field_name]['name'][0])) {
+            $uploaded_files = [];
+            foreach ($_FILES[$field_name]['name'] as $index => $file_name) {
+                $file = [
+                    'name'     => $file_name,
+                    'type'     => $_FILES[$field_name]['type'][$index],
+                    'tmp_name' => $_FILES[$field_name]['tmp_name'][$index],
+                    'error'    => $_FILES[$field_name]['error'][$index],
+                    'size'     => $_FILES[$field_name]['size'][$index],
+                ];
+                $upload = wp_handle_upload($file, ['test_form' => false]);
+                if (!isset($upload['error']) && isset($upload['url'])) {
+                    $uploaded_files[] = $upload['url']; 
+                }
+            }
+
+            return implode(',', $uploaded_files);
+        }
+
+        if ($pet_profile_id) {
+            return $this->get_existing_gallery($pet_profile_id);
+        }
+
+        return '';
+    }
+
+
+    private function get_existing_gallery($pet_profile_id) {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'giopio_pet_profile';
+        $result = $wpdb->get_var($wpdb->prepare("SELECT gallery FROM {$table_name} WHERE id = %d", $pet_profile_id));
+        return $result ? $result : '';
+    }
+
+    private function handle_file_upload($field_name, $pet_profile_id = null) {
+        if (isset($_FILES[$field_name]) && !empty($_FILES[$field_name]['name'])) {
+            $file = [
+                'name'     => $_FILES[$field_name]['name'],
+                'type'     => $_FILES[$field_name]['type'],
+                'tmp_name' => $_FILES[$field_name]['tmp_name'],
+                'error'    => $_FILES[$field_name]['error'],
+                'size'     => $_FILES[$field_name]['size'],
+            ];
+            $upload = wp_handle_upload($file, ['test_form' => false]);
+            if (!isset($upload['error']) && isset($upload['url'])) {
+                return $upload['url'];
+            }
+        }
+
+        if ($pet_profile_id) {
+            return $this->get_existing_image($field_name, $pet_profile_id);
+        }
+        return '';
+    }
+
+    private function get_existing_image($field_name, $pet_profile_id) {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'giopio_pet_profile';
+        $result = $wpdb->get_var($wpdb->prepare("SELECT {$field_name} FROM {$table_name} WHERE id = %d", $pet_profile_id));
+
+        return $result ? $result : '';
+    }
+
+    private function update_pet_profile($table_name, $data, $pet_profile_id) {
+        global $wpdb;
+        $updated = $wpdb->update(
+            $table_name,
+            $data,
+            ['id' => $pet_profile_id],
+            array_fill(0, count($data), '%s'), 
+            ['%d']
+        );
+        if ($updated === false) return;
+    }
+
+    private function insert_pet_profile($table_name, $data) {
+        global $wpdb;
+        $inserted = $wpdb->insert(
+            $table_name,
+            $data,
+            array_fill(0, count($data), '%s')
+        );
+        
+        if ($inserted === false) return;
+
+        return $wpdb->insert_id;
+    }
+
+    private function get_pet_profile($pet_profile_id) {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'giopio_pet_profile';
+        return $wpdb->get_row($wpdb->prepare("SELECT * FROM $table_name WHERE id = %d", $pet_profile_id));
+    }
+
+    private function show_404() {
+        status_header(404);
+        nocache_headers();
+        get_header();
+        include $this->plugin_path . 'templates/pet-profile/404.php';
+        get_footer();
+        exit;
+    }
+
+    private function display_pet_profile($pet_profile) {
+        get_header();
+        if ($pet_profile->name) {
+            include $this->plugin_path . 'templates/pet-profile/view-user-pet.php';
+        } else {
+            include $this->plugin_path . 'templates/pet-profile/user-pet-profile.php';
+        }
+        get_footer();
+        exit;
+    }
+
 
 
 

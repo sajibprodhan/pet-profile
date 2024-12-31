@@ -98,28 +98,19 @@
     }
 
     // Fetch data from your custom database table using $pet_profile_id
-    global $wpdb;
-    $table_name = $wpdb->prefix . 'giopio_pet_profile';
-    $pet_profile_id = get_query_var( 'pet_profile_id' );
+    // global $wpdb;
+    // $table_name = $wpdb->prefix . 'giopio_pet_profile';
+    // $pet_profile_id = get_query_var( 'pet_profile_id' );
 
-    // Query to fetch pet profile details based on the numeric ID
-    $query       = $wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $pet_profile_id );
-    $pet_profile = $wpdb->get_row( $query );
+    // // Query to fetch pet profile details based on the numeric ID
+    // $query       = $wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $pet_profile_id );
+    // $pet_profile = $wpdb->get_row( $query );
 
-    if ( empty($pet_profile)  ) {
-        status_header(404);
-        nocache_headers();
-        get_header();
-        include $this->plugin_path . 'templates/pet-profile/404.php';
-        get_footer();
-        exit;
-    }
 
-    // If the pet profile exists, display the pet profile
-    if ( $pet_profile->name ) {
-        include $this->plugin_path . 'templates/pet-profile/view-user-pet.php';
-    } else {
-        include $this->plugin_path . 'templates/pet-profile/user-pet-profile.php';
-    }
+    // if ( $pet_profile->name ) {
+    //     include $this->plugin_path . 'templates/pet-profile/view-user-pet.php';
+    // } else {
+    //     include $this->plugin_path . 'templates/pet-profile/user-pet-profile.php';
+    // }
 
 ?>

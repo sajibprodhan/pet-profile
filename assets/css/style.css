@@ -147,7 +147,9 @@ body {
 }
 
 .form-group textarea,
-.form-group input[type="text"]{
+.form-group input[type="text"],
+.form-group input[type="date"]
+{
     width: 100%;
     display: block;
     height: 45px;
@@ -320,7 +322,6 @@ body {
     background-color: #f6f6f6;
     border-radius: 12px;
     padding: 12px 18px;
-    display: inline-flex;
     align-items: center;
     column-gap: 15px;
     margin-top: 15px;
@@ -333,6 +334,7 @@ body {
     color: #737373;
     font-size: 14px;
     font-weight: 500;
+    margin-bottom: 10px;
 }
 
 .about-pet p svg{

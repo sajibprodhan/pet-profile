@@ -1,3 +1,13 @@
+
+
+<?php 
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'giopio_pet_profile';
+    $pet_profile_id = get_query_var( 'pet_profile_id' );
+    $query       = $wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $pet_profile_id );
+    $pet_profile = $wpdb->get_row( $query );
+?>
+
 <div>
     <form action="" method="post" enctype="multipart/form-data">
         <!-- Upload Cover Photo start -->
@@ -44,7 +54,7 @@
 
                         <div class="form-group">
                             <label for="pet-name" class="normal-label">Pet Name</label>
-                            <input type="text" placeholder="Enter pet name" id="pet-name" name="pet_name">
+                            <input type="text" placeholder="Enter pet name" id="pet-name" name="pet_name" value="<?php echo $pet_profile->name ?: ''; ?>">
                         </div>
                         <div class="form-group">
                             <label for="pet-age" class="normal-label">Pet Age</label>
@@ -58,7 +68,7 @@
                                     <input type="radio" name="pet_gender" id="male" value="male" class="sr-only">
                                 </div>
                                 <div class="gender-group">
-                                    <label for="male">F</label>
+                                    <label for="female">F</label>
                                     <input type="radio" name="pet_gender" id="female" value="female" class="sr-only">
                                 </div>
                             </div>
@@ -107,7 +117,7 @@
                         <div class="form-group">
                             <label for="about" class="normal-label">About Your Pet</label>
                             <textarea rows="5" name="pet_about" id="about"
-                                placeholder="Write something about your pet....."></textarea>
+                                placeholder="Write something about your pet....."><?php echo $pet_profile->about ?: ''; ?></textarea>
                         </div>
                     </div>
                     <div class="form-right">
@@ -115,39 +125,43 @@
                         <div class="custom-width">
                             <div class="form-group">
                                 <label for="owner-name" class="normal-label">Owner’s Name</label>
-                                <input type="text" placeholder="Enter Name" id="owner-name" name="pet_owner_name">
+                                <input type="text" placeholder="Enter Name" id="owner-name" name="pet_owner_name" value="<?php echo $pet_profile->owner_name ?: ''; ?>">
                             </div>
                             <div class="form-group">
-                                <label for="owner-mobile" class="normal-label">Owner’s Name</label>
+                                <label for="owner-mobile" class="normal-label">Owner’s Mobile</label>
                                 <input type="text" placeholder="Owner’s Mobile Number" id="owner-mobile"
-                                    name="pet_mobile">
+                                    name="pet_mobile" value="<?php echo $pet_profile->mobile ?: ''; ?>">
                             </div>
                             <div class="form-group">
                                 <label for="owner-location" class="normal-label">Owner’s Location</label>
-                                <input type="text" placeholder="Owner’s Location" id="owner-location" name="pet_location">
+                                <input type="text" placeholder="Owner’s Location" id="owner-location" name="pet_location" value="<?php echo $pet_profile->location ?: ''; ?>">
                             </div>
                             <div class="form-group">
                                 <label for="fb-id" class="normal-label">Facebook ID</label>
-                                <input type="text" placeholder="ID Link" id="fb-id" name="pet_facebook">
+                                <input type="text" placeholder="ID Link" id="fb-id" name="pet_facebook" value="<?php echo $pet_profile->facebook ?: ''; ?>">
                             </div>
                             <div class="form-group">
                                 <label for="wapp-id" class="normal-label">What’s app link</label>
-                                <input type="text" placeholder="ID Link" id="wapp-id" name="pet_whatsapp">
+                                <input type="text" placeholder="ID Link" id="wapp-id" name="pet_whatsapp" value="<?php echo $pet_profile->whatsapp_id ?: ''; ?>">
                             </div>
                         </div>
                         <h4 class="mt-5">Vaccination Status</h4>
                         <div class="grid-layout">
+                            <?php
+                                $date1 = $pet_profile->vaccine_date ? new DateTime( $pet_profile->vaccine_date ) : null;
+                                $date2 = $pet_profile->vaccine_date ? new DateTime( $pet_profile->vaccine_date_2 ) : null;
+                            ?>
                             <div class="form-group vaccine-group">
                                 <input type="checkbox" name="vaccine_name" id="vaccine_name_status">
-                                <input type="text" placeholder="Vaccine Name" id="vaccine_name" name="pet_vaccine_date">
+                                <input type="text" placeholder="Vaccine Name" id="vaccine_name" name="pet_vaccine_name" value="<?php echo $pet_profile->vaccine_name ?: ''; ?>">
                                 <input type="date" placeholder="Date" id="vaccine_date" name="pet_vaccine_date"
-                                    class="vaccine-date">
+                                    class="vaccine-date" value="<?php echo $date1 ? $date1->format( 'd M Y' ) : ''; ?>">
                             </div>
                             <div class="form-group vaccine-group">
                                 <input type="checkbox" name="vaccine_name_2" id="vaccine_name_status_2">
-                                <input type="text" placeholder="Vaccine Name" id="vaccine_name_2" name="pet_vaccine_name_2">
+                                <input type="text" placeholder="Vaccine Name" id="vaccine_name_2" name="pet_vaccine_name_2" value="<?php echo $pet_profile->vaccine_name_2 ?: ''; ?>">
                                 <input type="date" placeholder="Date" id="vaccine_date_2" name="pet_vaccine_date_2"
-                                    class="vaccine-date">
+                                    class="vaccine-date" <?php echo $date2 ? $date2->format( 'd M Y' ) : ''; ?>">
                             </div>
                         </div>
 
