@@ -1,0 +1,138 @@
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    /* Styles for small desktops */
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    .header-area {
+        padding: 100px 0px;
+    }
+
+    .header-title {
+        font-size: 18px;
+    }
+
+    .upload-area .cover {
+        cursor: pointer;
+        display: block;
+        width: 100%;
+    }
+
+    .upload-avatar {
+        width: 180px;
+        height: 180px;
+    }
+
+    .-mt-5 {
+        margin-top: -6rem;
+    }
+
+    .form-area h4 {
+        font-size: 20px;
+    }
+
+    .form-group label.normal-label {
+        font-size: 16px;
+    }
+
+    .form-group input[type="text"] {
+        height: 48px;
+    }
+
+    .form-area {
+        grid-template-columns: repeat(3, 1fr);
+        column-gap: 40px;
+    }
+
+    .preview-right,
+    .form-right {
+        grid-column: span 2;
+        border-left: 2px solid #d8d8d8;
+        padding-left: 6rem;
+        padding-top: 4rem;
+    }
+
+    .form-left {
+        width: 90%;
+    }
+
+    .custom-width {
+        display: grid;
+        width: 95%;
+        grid-template-columns: repeat(3, 1fr);
+        column-gap: 20px;
+    }
+
+    .grid-layout {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .submit-bttn {
+        display: flex;
+        justify-content: end;
+        margin-right: 5%;
+    }
+
+    .submit-bttn .submit-button {
+        display: inline-flex;
+        width: 45%;
+    }
+
+    .preview-section {
+        padding: 40px 0px;
+    }
+
+    .name-flex a {
+        display: none;
+    }
+
+    .adress-box {
+        margin-bottom: 3rem;
+    }
+
+    .name-box {
+        margin-bottom: 3rem;
+    }
+
+    .edit-pro-bttn {
+        display: block;
+        margin-top: 6rem;
+    }
+
+    .edit-pro-bttn a {
+        display: inline-block;
+        font-size: 14px;
+        font-weight: 500;
+        color: #1e7ed4;
+        padding: 14px 56px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        border: 2px solid #1e7ed4;
+    }
+
+    .edit-pro-bttn a:hover {
+        background-color: #1e7ed4;
+        color: #fff;
+    }
+
+    .profile-pic-area {
+        width: 180px;
+        height: 180px;
+    }
+
+    .desktop-banner {
+        display: block;
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .mobile-banner {
+        display: none;
+    }
+
+    .mt-0{
+        margin-top: -1rem!important;
+    }
+}

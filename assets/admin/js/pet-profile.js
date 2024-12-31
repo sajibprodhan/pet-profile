@@ -1,6 +1,5 @@
 jQuery(document).ready(function ($) {
 
-    $('.spinner-image').hide();
     $(document).on('click', '.select_all', function () {
         $('input[name="pet_profiles[]"]').prop('checked', $(this).prop('checked'));
     });

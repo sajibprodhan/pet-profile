@@ -14,6 +14,7 @@ use Inc\Base\Base_Controller;
 class Enqueue extends Base_Controller {
     public function register() {
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
+        add_action('wp_enqueue_scripts', array($this, 'enqueue_frontend_assets'));
     }
 
     public function enqueue_admin_assets() {
@@ -37,4 +38,11 @@ class Enqueue extends Base_Controller {
             'nonce'    => wp_create_nonce( 'ajax_nonce' ),
         ) );
     }
+
+    public function enqueue_frontend_assets()
+	{
+		wp_enqueue_style( 'style-css', $this->plugin_url . 'assets/css/style.css', array(),  time() );
+        wp_enqueue_style( 'responsive-css', $this->plugin_url . 'assets/css/responsive.css', array(),  time() );
+
+	}
 }

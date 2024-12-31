@@ -11,12 +11,13 @@
             </tr>
             <tr>
                 <th><label for="age"><?php _e('Age', 'pet-profile'); ?></label></th>
-                <td><input type="number" name="age" id="age" value="<?php echo esc_attr($profile['age']); ?>" class="regular-text" required></td>
+                <td><input type="number" name="age" id="age" value="<?php echo esc_attr($profile['age']); ?>" class="regular-text"></td>
             </tr>
             <tr>
                 <th><label for="gender"><?php _e('Gender', 'pet-profile'); ?></label></th>
                 <td>
                     <select name="gender" id="gender">
+                        <option value=""><?php _e('Select Gender', 'pet-profile'); ?></option>
                         <option value="male" <?php selected($profile['gender'], 'male'); ?>><?php _e('Male', 'pet-profile'); ?></option>
                         <option value="female" <?php selected($profile['gender'], 'female'); ?>><?php _e('Female', 'pet-profile'); ?></option>
                     </select>
@@ -30,11 +31,11 @@
 
             <tr>
                 <th><label for="owner_name"><?php _e('Owner Name', 'pet-profile'); ?></label></th>
-                <td><input type="text" name="owner_name" id="owner_name" value="<?php echo esc_attr($profile['owner_name']); ?>" class="regular-text" required></td>
+                <td><input type="text" name="owner_name" id="owner_name" value="<?php echo esc_attr($profile['owner_name']); ?>" class="regular-text"></td>
             </tr>
             <tr>
                 <th><label for="mobile"><?php _e('Mobile', 'pet-profile'); ?></label></th>
-                <td><input type="text" name="mobile" id="mobile" value="<?php echo esc_attr($profile['mobile']); ?>" class="regular-text" required></td>
+                <td><input type="text" name="mobile" id="mobile" value="<?php echo esc_attr($profile['mobile']); ?>" class="regular-text"></td>
             </tr>
             <tr>
                 <th><label for="location"><?php _e('Location', 'pet-profile'); ?></label></th>

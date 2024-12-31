@@ -44,12 +44,11 @@
 
 .spinner-image {
     position: absolute;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: none;
+    transform: translate(-50%, -50%);
     z-index: 9999;
+    left: 50%;
+    top: 50%;
 }
 
 form#bulk-action-form {
@@ -58,4 +57,8 @@ form#bulk-action-form {
 
 .spinner-image img {
     max-width: 50px;
+}
+
+.bulk-action-form{
+    position: relative
 }

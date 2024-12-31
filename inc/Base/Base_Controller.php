@@ -30,9 +30,6 @@ class Base_Controller {
         $this->plugin_slug   =  basename($this->plugin, '.php');
         $this->store_plugin_version();
         $this->database_migration();
-
-        $this->create_pet_page_on_activation();
-        
     }
 
 
@@ -49,36 +46,11 @@ class Base_Controller {
         }
     }
 
-    function create_pet_page_on_activation() {
-        $query = new WP_Query( array(
-            'post_type'   => 'page',
-            'post_title'  => 'Pet Profile',
-            'posts_per_page' => 1,
-            'post_status' => 'publish',
-        ) );
-
-        if ( ! $query->have_posts() ) {
-            $new_page = array(
-                'post_title'   => 'Pet Profile',
-                'post_content' => '',
-                'post_status'  => 'publish',
-                'post_type'    => 'page',
-            );
-
-            $page_id = wp_insert_post( $new_page );
-
-            if ( $page_id ) {
-                update_post_meta( $page_id, '_wp_page_template', 'single-pet.php' );
-            }
-        }
-        
-        // Reset the query
-        wp_reset_postdata();
-    }
 
     private function database_migration(){
         Create_Tables::create_all_tables();
     }
+
 
 
 }

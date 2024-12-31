@@ -9,6 +9,10 @@ class Giopio_Pet_Profile {
     public static function create() {
         global $wpdb;
         $table_name      = $wpdb->prefix . 'giopio_pet_profile';
+
+        if ( self::is_table_exists( $table_name ) ) {
+            return;
+        }
         $charset_collate = $wpdb->get_charset_collate();
 
         $sql = "CREATE TABLE $table_name (
@@ -39,6 +43,12 @@ class Giopio_Pet_Profile {
         dbDelta( $sql );
 
         $wpdb->query( "ALTER TABLE $table_name AUTO_INCREMENT = 1000;" );
+    }
+
+    private static function is_table_exists($table_name) {
+        global $wpdb;
+        $query = $wpdb->prepare("SHOW TABLES LIKE %s", $table_name);
+        return $wpdb->get_var($query) == $table_name;
     }
 
 }

@@ -18,10 +18,12 @@
 
     <!-- Bulk Action Form -->
     <form method="POST" action="" class="bulk-action-form" id="bulk-action-form">
+
         <div class="spinner-image">
-            <!-- Example Spinner -->
             <img src="<?php echo $this->plugin_url . 'assets/images/loading.png'; ?>" alt="Loading..." />
         </div>
+
+
         <select name="bulk_action" class="bulk-action-selector">
             <option value="">Bulk Actions</option>
             <option value="download">Download</option>
@@ -29,7 +31,8 @@
         </select>
         <input type="submit" value="Apply" class="button action" />
 
-        <table class="wp-list-table widefat fixed striped">
+        <table class="wp-list-table widefat fixed striped table-view-primary">
+
             <thead>
                 <tr>
                     <th class="check-column"><input type="checkbox" class="select_all" /></th>
@@ -47,7 +50,6 @@
                     <th>Vaccine Date</th>
                     <th>Vaccine Name 2</th>
                     <th>Vaccine Date 2</th>
-                    <th>Gallery</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -77,11 +79,10 @@
                                 <td><?php echo esc_html( $profile['vaccine_date'] ); ?></td>
                                 <td><?php echo esc_html( $profile['vaccine_name_2'] ); ?></td>
                                 <td><?php echo esc_html( $profile['vaccine_date_2'] ); ?></td>
-                                <td><?php // echo $this->get_gallery_column( $profile['gallery'] ); ?></td>
                                 <td>
                                     <span class="qrCodeContainers"></span>
                                     <!-- <a href="<?php echo admin_url( 'admin.php?page=edit_pet_profile&action=edit&id=' . $profile['id'] ); ?>">Edit</a> | -->
-                                    <a href="<?php echo admin_url( 'admin.php?page=pet_profile&action=edit&id=' . $profile['id'] );?>">Edit</a>
+                                    <a href="<?php echo admin_url( 'admin.php?page=pet_profile&action=edit&id=' . $profile['id'] );?>">Edit</a> |
 
                                     <a href="<?php echo admin_url( 'admin-post.php?action=download_pet&id=' . $profile['id'] ); ?>" target="_blank">Download</a>
 
@@ -112,7 +113,6 @@
                     <th>Vaccine Date</th>
                     <th>Vaccine Name 2</th>
                     <th>Vaccine Date 2</th>
-                    <th>Gallery</th>
                     <th>Action</th>
                 </tr>
             </tfoot>
