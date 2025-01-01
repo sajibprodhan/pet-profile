@@ -68,7 +68,7 @@ body {
 }
 
 .sr-only{
-    display: none;
+    display: none !important;
 } 
 
 .-mt-5{
@@ -105,10 +105,32 @@ body {
     border-radius: 50%;
 }
 
+.has-profile-pic .upload-avatar-icon{
+    display: none;
+    transition: 300ms ease-in-out;
+}
+
+.has-profile-pic:hover .upload-avatar-icon {
+    display: block;
+}
+
 .upload-avatar-icon{
     width: 40px;
     color: #fff;
 }
+.view-profile-picture{
+    position: relative;
+    cursor: pointer;
+}
+.view-profile-picture .upload-avatar-icon {
+    width: 40px;
+    color: #000;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
 
 .main-from-inputs{
     padding: 0 20px;
@@ -280,6 +302,7 @@ body {
 /* prevew page css */
 .preview-header{
     height: 250px;
+    overflow: hidden;
 } 
 
 .profile-pic-area{
@@ -482,4 +505,32 @@ body {
 
 .edit-pro-bttn{
     display: none;
+}
+
+.has-cover{
+    background: none;
+}
+
+.has-cover .header-title, .has-cover .upload-icon{
+    color: #fff;
+}
+
+
+.has-cover .upload-area{
+    display: none;
+    transition: 300ms ease-in-out;
+}
+
+.has-cover:hover .upload-area{
+    display: block;
+}
+
+.vaccine-icon{
+    width: 17px;
+}
+
+.vaccine-icon {
+    width: 16px;
+    display: inline-block;
+    margin-top: 1px;
 }

@@ -172,8 +172,14 @@
                             <h4>Vaccination Status</h4>
 
                             <div class="vaccine-status">
-                                <?php if ($pet_profile->vaccine_date) : ?>
-                                    <h5><input type="checkbox" name="vaccine_name_status" id=""> <?php echo $pet_profile->vaccine_name ;?>
+                                <?php if ($pet_profile->vaccine_name && $pet_profile->vaccine_date) : ?>
+                                    <h5>
+                                        <svg class="vaccine-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" 
+                                        stroke-width="3" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                        </svg>
+
+                                        <?php echo $pet_profile->vaccine_name; ?>
                                         <span>
                                             <?php 
                                                 $date = new DateTime($pet_profile->vaccine_date);
@@ -182,17 +188,24 @@
                                         </span>
                                     </h5>
                                 <?php endif; ?>
-                                <?php if ($pet_profile->vaccine_date_2) : ?>
-                                    <h5><input type="checkbox" name="vaccine_name_status" id=""> <?php echo $pet_profile->vaccine_name_2 ;?>
+
+                                <?php if ($pet_profile->vaccine_name_2 && $pet_profile->vaccine_date_2) : ?>
+                                    <h5>
+                                        <svg class="vaccine-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                        </svg>
+
+                                        <?php echo $pet_profile->vaccine_name_2; ?>
                                         <span> 
-                                                <?php 
-                                                    $date = new DateTime($pet_profile->vaccine_date_2);
-                                                    echo $date->format('d M Y'); 
-                                                ?>
+                                            <?php 
+                                                $date = new DateTime($pet_profile->vaccine_date_2);
+                                                echo $date->format('d M Y'); 
+                                            ?>
                                         </span>
                                     </h5>
                                 <?php endif; ?>
                             </div>
+
                         <?php endif; ?>
 
 

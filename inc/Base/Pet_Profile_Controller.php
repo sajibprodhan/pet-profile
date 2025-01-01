@@ -9,6 +9,8 @@ use Mpdf\QrCode\Output;
 use Mpdf\QrCode\QrCode;
 use function current_time;
 
+use WP_Error;
+
 class Pet_Profile_Controller extends Base_Controller {
 
     use MpdfConfig;
@@ -70,7 +72,6 @@ class Pet_Profile_Controller extends Base_Controller {
 
         $this->handle_bulk_action( $results );
 
-        // Display results
         include $this->plugin_path . "/templates/pet-profile/index.php";
 
     }
@@ -91,7 +92,6 @@ class Pet_Profile_Controller extends Base_Controller {
             return;
         }
 
-        // Get the existing pet profile data
         $profile = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $profile_id ), ARRAY_A );
 
         if ( !$profile ) {
@@ -100,7 +100,6 @@ class Pet_Profile_Controller extends Base_Controller {
         }
 
         if ( isset( $_POST['update_pet_profile'] ) ) {
-
             $data = [
                 'name'           => sanitize_text_field( $_POST['name'] ),
                 'age'            => sanitize_text_field( $_POST['age'] ),
@@ -117,15 +116,15 @@ class Pet_Profile_Controller extends Base_Controller {
                 'vaccine_date_2' => sanitize_text_field( $_POST['vaccine_date_2'] ),
             ];
 
+            $data['user_id'] = ( isset( $_POST['user_id'] ) && !empty( $_POST['user_id'] ) && $_POST['user_id'] != 0 ) ? (int) $_POST['user_id']
+: NULL;
             $wpdb->update( $table_name, $data, ['id' => $profile_id] );
 
             echo '<div class="updated"><p>Pet profile updated successfully.</p></div>';
-            // Redirect back to the listing page
             wp_redirect( admin_url( 'admin.php?page=pet_profile' ) );
             exit;
         }
 
-        // Display the edit form with pre-filled data
         include $this->plugin_path . '/templates/pet-profile/edit.php';
 
     }
@@ -327,8 +326,6 @@ class Pet_Profile_Controller extends Base_Controller {
                 $this->display_pet_profile($pet_profile);
             }
         }
-
-
     }
 
     private function handle_pet_profile_submission() {
@@ -338,22 +335,43 @@ class Pet_Profile_Controller extends Base_Controller {
         }
         // Sanitize form inputs
         $pet_profile_id = get_query_var('pet_profile_id');
+
+        $profile = $this->get_pet_profile($pet_profile_id);
+
+
+        $pet_vaccine_name = sanitize_text_field($_POST['pet_vaccine_name'] );
+        $pet_vaccine_date = sanitize_text_field($_POST['pet_vaccine_date']);
+        $pet_vaccine_name_2 = sanitize_text_field($_POST['pet_vaccine_name_2']) ;
+        $pet_vaccine_date_2 = sanitize_text_field($_POST['pet_vaccine_date_2']);
+
+        if (empty($pet_vaccine_name) || empty($pet_vaccine_date)) {
+            $message =  'Vaccine name and date are required';
+            wp_redirect( site_url("pet-profile/". $profile->id ."/?action=edit&message=$message") );
+            exit;
+        }
+
+        if (empty($pet_vaccine_name_2) || empty($pet_vaccine_date_2)) {
+            $message = 'Second vaccine name and date are required';
+            wp_redirect( site_url("pet-profile/". $profile->id ."/?action=edit&messagetwo=$message") );
+            exit;
+        }
+
         $data = [
             'user_id'         => get_current_user_id(),
-            'name'            => sanitize_text_field($_POST['pet_name'] ?? ''),
-            'age'             => intval($_POST['pet_age'] ?? 0),
-            'gender'          => sanitize_text_field($_POST['pet_gender'] ?? ''),
-            'owner_name'      => sanitize_text_field($_POST['pet_owner_name'] ?? ''),
-            'mobile'          => sanitize_text_field($_POST['pet_mobile'] ?? ''),
-            'location'        => sanitize_text_field($_POST['pet_location'] ?? ''),
-            'facebook'        => sanitize_text_field($_POST['pet_facebook'] ?? ''),
-            'whatsapp_id'     => sanitize_text_field($_POST['pet_whatsapp'] ?? ''),
-            'vaccine_name'    => sanitize_text_field($_POST['pet_vaccine_name'] ?? ''),
-            'vaccine_date'    => sanitize_text_field($_POST['pet_vaccine_date'] ?? ''),
-            'vaccine_name_2'  => sanitize_text_field($_POST['pet_vaccine_name_2'] ?? ''),
-            'vaccine_date_2'  => sanitize_text_field($_POST['pet_vaccine_date_2'] ?? ''),
-            'about'           => sanitize_textarea_field($_POST['pet_about'] ?? ''),
-            'cover_photo'     => $this->handle_file_upload('pet_cover_photo', $pet_profile_id),
+            'name'            => sanitize_text_field($_POST['pet_name'] ?: $profile->name),
+            'age'             => intval($_POST['pet_age'] ?: $profile->age),
+            'gender'          => sanitize_text_field($_POST['pet_gender'] ?: $profile->gender),
+            'owner_name'      => sanitize_text_field($_POST['pet_owner_name'] ?: $profile->owner_name),
+            'mobile'          => sanitize_text_field($_POST['pet_mobile'] ?: $profile->mobile),
+            'location'        => sanitize_text_field($_POST['pet_location'] ?: $profile->location),
+            'facebook'        => sanitize_text_field($_POST['pet_facebook'] ?: $profile->facebook),
+            'whatsapp_id'     => sanitize_text_field($_POST['pet_whatsapp'] ?: $profile->whatsapp_id),
+            'vaccine_name'    => $pet_vaccine_name ?: $profile->vaccine_name,
+            'vaccine_date'    => $pet_vaccine_date ?: $profile->vaccine_date,
+            'vaccine_name_2'  => $pet_vaccine_name_2 ?: $profile->vaccine_name_2,
+            'vaccine_date_2'  => $pet_vaccine_date_2 ?: $profile->vaccine_date_2,
+            'about'           => sanitize_textarea_field($_POST['pet_about'] ?: $profile->about),
+            'cover_photo'     => $this->handle_file_upload('cover_photo', $pet_profile_id),
             'profile_picture' => $this->handle_file_upload('profile_picture', $pet_profile_id),
             'gallery'         => $this->handle_file_uploads('pet_gallery', $pet_profile_id),
         ];
@@ -419,14 +437,16 @@ class Pet_Profile_Controller extends Base_Controller {
             ];
             $upload = wp_handle_upload($file, ['test_form' => false]);
             if (!isset($upload['error']) && isset($upload['url'])) {
-                return $upload['url'];
+                return $upload['url']; // New image uploaded, return the new URL
             }
         }
 
+        // If no new image is uploaded, return the existing image if updating
         if ($pet_profile_id) {
             return $this->get_existing_image($field_name, $pet_profile_id);
         }
-        return '';
+
+        return ''; // Return empty if no image and no pet profile id
     }
 
     private function get_existing_image($field_name, $pet_profile_id) {

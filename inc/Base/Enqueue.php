@@ -41,8 +41,14 @@ class Enqueue extends Base_Controller {
 
     public function enqueue_frontend_assets()
 	{
+        if ( !wp_script_is( 'jquery', 'enqueued' ) ) {
+            wp_enqueue_script( 'jquery' );
+        }
+        
 		wp_enqueue_style( 'style-css', $this->plugin_url . 'assets/css/style.css', array(),  time() );
         wp_enqueue_style( 'responsive-css', $this->plugin_url . 'assets/css/responsive.css', array(),  time() );
+
+        wp_enqueue_script( 'petprofile-script', $this->plugin_url . 'assets/admin/js/pet-profile.js', array( 'jquery' ), time(), true );
 
 	}
 }

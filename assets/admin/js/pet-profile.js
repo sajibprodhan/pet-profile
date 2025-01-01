@@ -83,5 +83,10 @@ jQuery(document).ready(function ($) {
         }
     });
 
+    $(document).on('change', "input[name='pet_gender']", function () {
+        $(".gender-group label").removeClass('active');
+        $(this).closest(".gender-group").find("label").addClass('active');
+    });
+
 
 });

@@ -1,20 +1,20 @@
 
 
-<?php 
-    global $wpdb;
-    $table_name = $wpdb->prefix . 'giopio_pet_profile';
-    $pet_profile_id = get_query_var( 'pet_profile_id' );
-    $query       = $wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $pet_profile_id );
-    $pet_profile = $wpdb->get_row( $query );
+<?php
+global $wpdb;
+$table_name     = $wpdb->prefix . 'giopio_pet_profile';
+$pet_profile_id = get_query_var( 'pet_profile_id' );
+$query          = $wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $pet_profile_id );
+$pet_profile    = $wpdb->get_row( $query );
 ?>
 
 <div>
     <form action="" method="post" enctype="multipart/form-data">
         <!-- Upload Cover Photo start -->
-        <div class="w-full header-area">
+        <div class="w-full header-area <?php echo $pet_profile->cover_photo ? 'preview-header has-cover' : ''; ?>" <?php echo $pet_profile->cover_photo ? 'style="background-image: url(' . $pet_profile->cover_photo . ');"' : ''; ?>>
             <div class="container">
                 <div class="text-center upload-area">
-                    <input type="file" name="pet_cover_photo" id="cover" class="sr-only">
+                    <input type="file" name="cover_photo" id="cover" class="sr-only">
                     <label for="cover" class="cover">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.25"
                             stroke="currentColor" class="upload-icon">
@@ -22,7 +22,7 @@
                                 d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
                         </svg>
                     </label>
-                    <h5 class="header-title">Upload Cover Photo</h5>
+                    <h5 class="header-title"><?php echo $pet_profile->cover_photo ? 'Change' : 'Upload'; ?> Cover Photo</h5>
                 </div>
             </div>
         </div>
@@ -31,15 +31,26 @@
         <!-- profile photo start -->
         <div class="w-full px-2 -mt-5">
             <div class="container">
-                <div class="text-start profile-area">
+                <div class="text-start profile-area <?php echo $pet_profile->profile_picture ? 'has-profile-pic' : ''; ?>">
                     <input type="file" name="profile_picture" id="profile" class="sr-only">
-                    <label for="profile" class="upload-avatar">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="upload-avatar-icon">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-                        </svg>
-                    </label>
+                    <?php if ( $pet_profile->profile_picture ): ?>
+                        <label for="profile">
+                            <div class="text-start profile-pic-area view-profile-picture">
+                                <img src="<?php echo $pet_profile->profile_picture; ?>" alt="<?php echo $pet_profile->name; ?>">
+                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                    stroke="currentColor" class="upload-avatar-icon">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                                </svg>
+                            </div>
+                        </label>
+                    <?php else: ?>
+                        <label for="profile" class="upload-avatar" <?php echo $pet_profile->profile_picture ? 'profile-color' : ''; ?>>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="upload-avatar-icon">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"></path>
+                            </svg>
+                        </label>
+                    <?php endif;?>
                 </div>
             </div>
         </div>
@@ -64,55 +75,61 @@
                             <label for="pet-age" class="normal-label">Pet Gender</label>
                             <div class="pet-gender">
                                 <div class="gender-group">
-                                    <label for="male" class="active">M</label>
-                                    <input type="radio" name="pet_gender" id="male" value="male" class="sr-only">
+                                    <label for="male" class="<?php echo $pet_profile->gender === 'male' ? 'active' : ''; ?>">M</label>
+                                    <input
+                                        type="radio"
+                                        name="pet_gender"
+                                        id="male"
+                                        value="male"
+                                        class="sr-only"
+                                        <?php selected( $pet_profile->gender, 'male' );?>
+                                    >
                                 </div>
                                 <div class="gender-group">
-                                    <label for="female">F</label>
-                                    <input type="radio" name="pet_gender" id="female" value="female" class="sr-only">
+                                    <label for="female" class="<?php echo $pet_profile->gender === 'female' ? 'active' : ''; ?>">F</label>
+                                    <input
+                                        type="radio"
+                                        name="pet_gender"
+                                        id="female"
+                                        value="female"
+                                        class="sr-only"
+                                        <?php selected( $pet_profile->gender, 'female' );?>
+                                    >
                                 </div>
                             </div>
                         </div>
+
                         <div class="form-group">
                             <label for="pet-age" class="normal-label">Upload Pictures</label>
                             <div class="pictures-group">
-                                <!-- box -->
+                            <?php $gallery = is_string( $pet_profile->gallery ) ? explode( ',', $pet_profile->gallery ) : [];?>
+
+                            <?php if (!empty($gallery)): ?>
+                                <?php foreach ($gallery as $index => $image_url): ?>
+                                    <div class="picture-box">
+                                        <label for="picture-<?php echo $index + 1; ?>">
+                                            <img src="<?php echo $image_url; ?>" alt="Gallery Image <?php echo $index + 1; ?>" class="uploaded-image">
+                                        </label>
+                                        <input type="file" name="pet_gallery[]" id="picture-<?php echo $index + 1; ?>" class="sr-only">
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+
+                            <!-- box for new uploads -->
+                            <?php for ($i = count($gallery); $i < 3; $i++): ?>
                                 <div class="picture-box">
-                                    <label for="picture-1">
+                                    <label for="picture-<?php echo $i + 1; ?>">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="size-6">
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 d="M12 4.5v15m7.5-7.5h-15" />
                                         </svg>
                                     </label>
-                                    <input type="file" name="pet_gallery[]" id="picture-1" class="sr-only">
+                                    <input type="file" name="pet_gallery[]" id="picture-<?php echo $i + 1; ?>" class="sr-only">
                                 </div>
-                                <!-- box -->
-                                <!-- box -->
-                                <div class="picture-box">
-                                    <label for="picture-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="size-6">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M12 4.5v15m7.5-7.5h-15" />
-                                        </svg>
-                                    </label>
-                                    <input type="file" name="pet_gallery[]" id="picture-2" class="sr-only">
-                                </div>
-                                <!-- box -->
-                                <!-- box -->
-                                <div class="picture-box">
-                                    <label for="picture-3">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="size-6">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M12 4.5v15m7.5-7.5h-15" />
-                                        </svg>
-                                    </label>
-                                    <input type="file" name="pet_gallery[]" id="picture-3" class="sr-only">
-                                </div>
-                                <!-- box -->
-                            </div>
+                            <?php endfor; ?>
+                        </div>
+
                         </div>
                         <div class="form-group">
                             <label for="about" class="normal-label">About Your Pet</label>
@@ -147,21 +164,23 @@
                         </div>
                         <h4 class="mt-5">Vaccination Status</h4>
                         <div class="grid-layout">
-                            <?php
-                                $date1 = $pet_profile->vaccine_date ? new DateTime( $pet_profile->vaccine_date ) : null;
-                                $date2 = $pet_profile->vaccine_date ? new DateTime( $pet_profile->vaccine_date_2 ) : null;
-                            ?>
                             <div class="form-group vaccine-group">
-                                <input type="checkbox" name="vaccine_name" id="vaccine_name_status">
+                                <!-- <input type="checkbox" name="vaccine_name" id="vaccine_name_status"> -->
                                 <input type="text" placeholder="Vaccine Name" id="vaccine_name" name="pet_vaccine_name" value="<?php echo $pet_profile->vaccine_name ?: ''; ?>">
                                 <input type="date" placeholder="Date" id="vaccine_date" name="pet_vaccine_date"
-                                    class="vaccine-date" value="<?php echo $date1 ? $date1->format( 'd M Y' ) : ''; ?>">
+                                    class="vaccine-date" value="<?php echo $pet_profile->vaccine_date ?: ''; ?>">
+                                    <?php if(isset($_GET['message'])): ?>
+                                        <div class="vaccine-message" style="display: none;"><?php echo $_GET['message'];?></div>
+                                    <?php endif; ?>
                             </div>
                             <div class="form-group vaccine-group">
-                                <input type="checkbox" name="vaccine_name_2" id="vaccine_name_status_2">
+                                <!-- <input type="checkbox" name="vaccine_name_2" id="vaccine_name_status_2"> -->
                                 <input type="text" placeholder="Vaccine Name" id="vaccine_name_2" name="pet_vaccine_name_2" value="<?php echo $pet_profile->vaccine_name_2 ?: ''; ?>">
                                 <input type="date" placeholder="Date" id="vaccine_date_2" name="pet_vaccine_date_2"
-                                    class="vaccine-date" <?php echo $date2 ? $date2->format( 'd M Y' ) : ''; ?>">
+                                    class="vaccine-date" value="<?php echo $pet_profile->vaccine_date_2 ?: ''; ?>">
+                                    <?php if(isset($_GET['messagetwo'])): ?>
+                                        <div class="vaccine-message" style="display: none;"><?php echo $_GET['messagetwo'];?></div>
+                                    <?php endif; ?>
                             </div>
                         </div>
 

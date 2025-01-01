@@ -6,6 +6,25 @@
         
         <table class="form-table">
             <tr>
+                <th><label for="gender"><?php _e('Users', 'pet-profile'); ?></label></th>
+                <td>
+                    <select name="user_id" id="user_id" class="regular-text">
+                        <option value=""><?php _e('Select User', 'pet-profile'); ?></option>
+                        <?php
+                            $users = get_users(array(
+                                // 'exclude' => array(1), // exclude admin
+                                'orderby' => 'display_name',
+                                'order' => 'ASC',
+                            ));
+                            
+                            foreach ($users as $user) {
+                                echo '<option value="' . esc_attr($user->ID) . '">' . esc_html($user->display_name) . '</option>';
+                            }
+                        ?>
+                    </select>
+                </td>
+            </tr>
+            <tr>
                 <th><label for="name"><?php _e('Pet Name', 'pet-profile'); ?></label></th>
                 <td><input type="text" name="name" id="name" value="<?php echo esc_attr($profile['name']); ?>" class="regular-text" required></td>
             </tr>
@@ -16,7 +35,7 @@
             <tr>
                 <th><label for="gender"><?php _e('Gender', 'pet-profile'); ?></label></th>
                 <td>
-                    <select name="gender" id="gender">
+                    <select name="gender" id="gender" class="regular-text">
                         <option value=""><?php _e('Select Gender', 'pet-profile'); ?></option>
                         <option value="male" <?php selected($profile['gender'], 'male'); ?>><?php _e('Male', 'pet-profile'); ?></option>
                         <option value="female" <?php selected($profile['gender'], 'female'); ?>><?php _e('Female', 'pet-profile'); ?></option>
