@@ -212,7 +212,7 @@
                     
                         <?php if ($pet_profile->user_id == get_current_user_id()) : ?>
                             <div class="edit-pro-bttn">
-                                <a href="<?php echo site_url("pet-profile/". $pet_profile->id ."/?action=edit") ;?>">Edit Proofile</a>
+                                <a href="<?php echo site_url("pet-profile/". $pet_profile->identifier ."/?action=edit") ;?>">Edit Proofile</a>
                             </div>
                         <?php endif; ?>
                     </div>

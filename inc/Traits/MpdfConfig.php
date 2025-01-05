@@ -20,19 +20,19 @@ trait MpdfConfig {
                     'B' => 'SolaimanLipi-Bold.ttf',
                 ],
             ],
-            'default_font'     => 'solaimanlipi',
+            'default_font'     => 'Times New Roman',
             'mode'             => 'utf-8',
-            'format'           => 'A4',
+            'format'           => [40, 40],
             'autoScriptToLang' => true,
             'autoLangToFont'   => true,
             // 'orientation' => 'P', // L - landscape, P - portrait
             'debug'            => false,
 
             // Set margins
-            'margin_top'       => 5,
-            'margin_bottom'    => 5,
-            'margin_left'      => 5,
-            'margin_right'     => 5,
+            'margin_top'       => 0,
+            'margin_bottom'    => 0,
+            'margin_left'      => 0,
+            'margin_right'     => 2,
 
 
         ] );

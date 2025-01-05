@@ -62,3 +62,15 @@ form#bulk-action-form {
 .bulk-action-form{
     position: relative
 }
+
+form.admin-search-form {
+    display: flex;
+    justify-content: end;
+    margin-bottom: 5px;
+}
+
+
+.widefat .check-column.select_all {
+    width: 14px;
+    margin-left: 0px;
+}

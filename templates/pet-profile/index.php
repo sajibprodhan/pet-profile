@@ -10,7 +10,7 @@
     </div>
 
     <!-- Search Form -->
-    <form method="get" action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>" class="search-form">
+    <form method="get" action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>" class="admin-search-form">
         <input type="hidden" name="page" value="pet_profile" />
         <input type="text" name="search" value="<?php echo esc_attr( $_GET['search'] ?? '' ); ?>" placeholder="Search by name or location" />
         <input type="submit" value="Search" class="button" />
@@ -24,8 +24,8 @@
         </div>
 
 
-        <select name="bulk_action" class="bulk-action-selector">
-            <option value="">Bulk Actions</option>
+        <select name="bulk_action" class="bulk-action-selector" style="margin-bottom: 10px;">
+            <option value="-1">Bulk Actions</option>
             <option value="download">Download</option>
             <option value="trash">Move to Trash</option>
         </select>
@@ -35,12 +35,11 @@
 
             <thead>
                 <tr>
-                    <th class="check-column"><input type="checkbox" class="select_all" /></th>
+                    <th><input type="checkbox" class="check-column select_all" /></th>
                     <th>QR-Code</th>
                     <th>Pet Name</th>
                     <th>Age</th>
                     <th>Gender</th>
-                    <th>About</th>
                     <th>Owner Name</th>
                     <th>Mobile</th>
                     <th>Location</th>
@@ -48,8 +47,8 @@
                     <th>Whatsapp ID</th>
                     <th>Vaccine Name</th>
                     <th>Vaccine Date</th>
-                    <th>Vaccine Name 2</th>
-                    <th>Vaccine Date 2</th>
+                    <!-- <th>Vaccine Name 2</th>
+                    <th>Vaccine Date 2</th> -->
                     <th>Action</th>
                 </tr>
             </thead>
@@ -62,14 +61,16 @@
                                 $output = new Output\Svg();
                             ?>
                             <tr>
-                                <td><input type="checkbox" name="pet_profiles[]" value="<?php echo esc_attr( $profile['id'] ); ?>" /></td>
+                                <td>
+                                    <input type="checkbox" name="pet_profiles[]" value="<?php echo esc_attr( $profile['id'] ); ?>" />
+                                </td>
                                 <td>
                                     <?php echo $output->output( $qrCode, 64, 'white', 'black' ); ?>
                                 </td>
                                 <td><?php echo esc_html( $profile['name'] ); ?></td>
                                 <td><?php echo esc_html( $profile['age'] ); ?></td>
                                 <td><?php echo esc_html( $profile['gender'] ); ?></td>
-                                <td><?php echo isset( $profile['about'] ) ? esc_html( wp_trim_words( $profile['about'], 10, '...' ) ) : ''; ?></td>
+                                <!-- <td><?php // echo isset( $profile['about'] ) ? esc_html( wp_trim_words( $profile['about'], 10, '...' ) ) : ''; ?></td> -->
                                 <td><?php echo esc_html( $profile['owner_name'] ); ?></td>
                                 <td><?php echo esc_html( $profile['mobile'] ); ?></td>
                                 <td><?php echo esc_html( $profile['location'] ); ?></td>
@@ -77,14 +78,14 @@
                                 <td><a href="<?php echo esc_url( $profile['whatsapp_id'] ); ?>" target="_blank"><?php echo esc_html( $profile['whatsapp_id'] ); ?></a></td>
                                 <td><?php echo esc_html( $profile['vaccine_name'] ); ?></td>
                                 <td><?php echo esc_html( $profile['vaccine_date'] ); ?></td>
-                                <td><?php echo esc_html( $profile['vaccine_name_2'] ); ?></td>
-                                <td><?php echo esc_html( $profile['vaccine_date_2'] ); ?></td>
+                                <!-- <td><?php // echo esc_html( $profile['vaccine_name_2'] ); ?></td>
+                                <td><?php // echo esc_html( $profile['vaccine_date_2'] ); ?></td> -->
                                 <td>
                                     <span class="qrCodeContainers"></span>
                                     <!-- <a href="<?php echo admin_url( 'admin.php?page=edit_pet_profile&action=edit&id=' . $profile['id'] ); ?>">Edit</a> | -->
                                     <a href="<?php echo admin_url( 'admin.php?page=pet_profile&action=edit&id=' . $profile['id'] );?>">Edit</a> |
 
-                                    <a href="<?php echo admin_url( 'admin-post.php?action=download_pet&id=' . $profile['id'] ); ?>" target="_blank">Download</a>
+                                    <a href="<?php echo admin_url( 'admin-post.php?action=download_pet&id=' . $profile['identifier'] ); ?>" target="_blank">Download</a>
 
                                     <!-- <button class="downloadQrCode">Download QR Code</button> -->
                                 </td>
@@ -103,7 +104,6 @@
                     <th>Pet Name</th>
                     <th>Age</th>
                     <th>Gender</th>
-                    <th>About</th>
                     <th>Owner Name</th>
                     <th>Mobile</th>
                     <th>Location</th>
@@ -111,8 +111,8 @@
                     <th>Whatsapp ID</th>
                     <th>Vaccine Name</th>
                     <th>Vaccine Date</th>
-                    <th>Vaccine Name 2</th>
-                    <th>Vaccine Date 2</th>
+                    <!-- <th>Vaccine Name 2</th>
+                    <th>Vaccine Date 2</th> -->
                     <th>Action</th>
                 </tr>
             </tfoot>

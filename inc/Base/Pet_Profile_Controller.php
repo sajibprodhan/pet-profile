@@ -74,6 +74,14 @@ class Pet_Profile_Controller extends Base_Controller {
 
         include $this->plugin_path . "/templates/pet-profile/index.php";
 
+        // $pet_table = new Pet_Profile_Table( $results );
+        // $pet_table->prepare_items();
+        // echo '<div class="wrap">';
+        // echo '<h1 class="wp-heading-inline">' . __( 'Pet Profiles', 'pet-profile' ) . '</h1>';
+        // echo '<a href="#" class="page-title-action createNewPetButton">' . __( 'Create New Pet', 'pet-profile' ) . '</a>';
+        // $pet_table->display();
+        // echo '</div>';
+
     }
 
     /**
@@ -156,7 +164,6 @@ class Pet_Profile_Controller extends Base_Controller {
 
     private function handle_bulk_action( $results ) {
 
-        $mpdf = $this->getMpdfConfig();
         if ( isset( $_POST['bulk_action'], $_POST['pet_profiles'] ) && !empty( $_POST['pet_profiles'] ) ) {
             $action       = $_POST['bulk_action'];
             $pet_profiles = $_POST['pet_profiles'];
@@ -167,21 +174,30 @@ class Pet_Profile_Controller extends Base_Controller {
             }
 
             if ( $action === 'download' ) {
+
                 ob_start();
-
-                $output = new Output\Html();
+                $mpdf = $this->getMpdfConfig();
+                $html = '';
                 foreach ( $pet_profiles as $pet_id ) {
-                    $url    = site_url( "/pet-profile/{$pet_id}" );
-                    $qrCode = new QrCode( $url );
-                    echo $output->output( $qrCode, 4 );
-                }
+                    $pet_profile = $this->get_pet_profile_by_id($pet_id);
+                    $url    = site_url( "/pet-profile/{$pet_profile->identifier}" );
 
+                    $qrCodeImageUrl = "https://quickchart.io/qr?text={$url}";
+                    $html .= "<img src='" . $qrCodeImageUrl . "' alt='QR Code' />";
+                    
+                    // $qrCode = new QrCode( $url );
+                    // $output = new Output\Html();
+                    // $html .= $output->output( $qrCode );
+
+                }
                 $html = ob_get_clean();
                 $mpdf->WriteHTML( $html );
                 $mpdf->Output( 'pet_qr_codes.pdf', 'I' );
+                exit;
             }
 
             if ( $action === 'trash' ) {
+                
                 foreach ( $pet_profiles as $profile_id ) {
                     $wpdb->delete( $wpdb->prefix . 'giopio_pet_profile', ['id' => $profile_id] );
                 }
@@ -220,7 +236,7 @@ class Pet_Profile_Controller extends Base_Controller {
      */
     public function download_pet_profile_pdf( $pet_id = null ) {
         if ( !$pet_id && isset( $_GET['id'] ) ) {
-            $pet_id = (int) $_GET['id'];
+            $pet_id = $_GET['id'];
         }
 
         if ( $pet_id ) {
@@ -255,6 +271,7 @@ class Pet_Profile_Controller extends Base_Controller {
         for ( $i = 0; $i < $pet_count; $i++ ) {
             $wpdb->insert( $table_name, [
                 'user_id'        => NULL,
+                'identifier'     => $this->generate_unique_id(),
                 'name'           => NULL,
                 'age'            => NULL,
                 'gender'         => NULL,
@@ -311,12 +328,14 @@ class Pet_Profile_Controller extends Base_Controller {
     }
 
     public function custom_pet_profile_template() {
+
         if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
             $this->handle_pet_profile_submission();
             return;
         }
 
         $pet_profile_id = get_query_var('pet_profile_id');
+
         $pet_profile = $this->get_pet_profile($pet_profile_id);
 
         if (isset($pet_profile_id) && !empty($pet_profile_id)) {
@@ -338,7 +357,6 @@ class Pet_Profile_Controller extends Base_Controller {
 
         $profile = $this->get_pet_profile($pet_profile_id);
 
-
         $pet_vaccine_name = sanitize_text_field($_POST['pet_vaccine_name'] );
         $pet_vaccine_date = sanitize_text_field($_POST['pet_vaccine_date']);
         $pet_vaccine_name_2 = sanitize_text_field($_POST['pet_vaccine_name_2']) ;
@@ -346,13 +364,13 @@ class Pet_Profile_Controller extends Base_Controller {
 
         if (empty($pet_vaccine_name) || empty($pet_vaccine_date)) {
             $message =  'Vaccine name and date are required';
-            wp_redirect( site_url("pet-profile/". $profile->id ."/?action=edit&message=$message") );
+            wp_redirect( site_url("pet-profile/". $profile->identifier ."/?action=edit&message=$message") );
             exit;
         }
 
         if (empty($pet_vaccine_name_2) || empty($pet_vaccine_date_2)) {
             $message = 'Second vaccine name and date are required';
-            wp_redirect( site_url("pet-profile/". $profile->id ."/?action=edit&messagetwo=$message") );
+            wp_redirect( site_url("pet-profile/". $profile->identifier ."/?action=edit&messagetwo=$message") );
             exit;
         }
 
@@ -373,7 +391,7 @@ class Pet_Profile_Controller extends Base_Controller {
             'about'           => sanitize_textarea_field($_POST['pet_about'] ?: $profile->about),
             'cover_photo'     => $this->handle_file_upload('cover_photo', $pet_profile_id),
             'profile_picture' => $this->handle_file_upload('profile_picture', $pet_profile_id),
-            'gallery'         => $this->handle_file_uploads('pet_gallery', $pet_profile_id),
+            'gallery'         => $this->handle_file_uploads('pet_gallery', $pet_profile_id) ?: null,
         ];
 
         // Insert or update the pet profile
@@ -387,7 +405,7 @@ class Pet_Profile_Controller extends Base_Controller {
         }
 
         // Redirect to the pet profile view page
-        wp_redirect(home_url("/pet-profile/{$pet_profile_id}"));
+        wp_redirect(home_url("/pet-profile/{$profile->identifier}"));
         exit;
     }
 
@@ -422,7 +440,7 @@ class Pet_Profile_Controller extends Base_Controller {
     private function get_existing_gallery($pet_profile_id) {
         global $wpdb;
         $table_name = $wpdb->prefix . 'giopio_pet_profile';
-        $result = $wpdb->get_var($wpdb->prepare("SELECT gallery FROM {$table_name} WHERE id = %d", $pet_profile_id));
+        $result = $wpdb->get_var($wpdb->prepare("SELECT gallery FROM {$table_name} WHERE identifier = %d", $pet_profile_id));
         return $result ? $result : '';
     }
 
@@ -452,7 +470,7 @@ class Pet_Profile_Controller extends Base_Controller {
     private function get_existing_image($field_name, $pet_profile_id) {
         global $wpdb;
         $table_name = $wpdb->prefix . 'giopio_pet_profile';
-        $result = $wpdb->get_var($wpdb->prepare("SELECT {$field_name} FROM {$table_name} WHERE id = %d", $pet_profile_id));
+        $result = $wpdb->get_var($wpdb->prepare("SELECT {$field_name} FROM {$table_name} WHERE identifier = %d", $pet_profile_id));
 
         return $result ? $result : '';
     }
@@ -462,9 +480,9 @@ class Pet_Profile_Controller extends Base_Controller {
         $updated = $wpdb->update(
             $table_name,
             $data,
-            ['id' => $pet_profile_id],
+            ['identifier' => $pet_profile_id],
             array_fill(0, count($data), '%s'), 
-            ['%d']
+            ['%s']
         );
         if ($updated === false) return;
     }
@@ -483,6 +501,12 @@ class Pet_Profile_Controller extends Base_Controller {
     }
 
     private function get_pet_profile($pet_profile_id) {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'giopio_pet_profile';
+        return $wpdb->get_row($wpdb->prepare("SELECT * FROM $table_name WHERE identifier = %s", $pet_profile_id));
+    }
+
+    private function get_pet_profile_by_id($pet_profile_id) {
         global $wpdb;
         $table_name = $wpdb->prefix . 'giopio_pet_profile';
         return $wpdb->get_row($wpdb->prepare("SELECT * FROM $table_name WHERE id = %d", $pet_profile_id));
@@ -509,6 +533,13 @@ class Pet_Profile_Controller extends Base_Controller {
     }
 
 
+
+    private function generate_unique_id() {
+        $timestamp = str_replace('.', '', (string) microtime(true));
+        $random_value = mt_rand(100000, 999999);
+        $unique_id = $timestamp . $random_value;
+        return $unique_id;
+    }
 
 
 

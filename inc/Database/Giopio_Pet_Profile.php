@@ -18,6 +18,7 @@ class Giopio_Pet_Profile {
         $sql = "CREATE TABLE $table_name (
             id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             user_id BIGINT(20) UNSIGNED DEFAULT NULL,
+            identifier VARCHAR(255) DEFAULT NULL,
             cover_photo VARCHAR(255) DEFAULT NULL,
             profile_picture VARCHAR(255) DEFAULT NULL,
             name VARCHAR(255) DEFAULT NULL,

@@ -67,7 +67,6 @@ jQuery(document).ready(function ($) {
 
     // Modal js
     $(document).on('click', '.createNewPetButton', function () {
-        console.log('Create New Pet button clicked'); // Debugging log
         $(".createPetModal").fadeIn(); // Show modal
     });
 
@@ -79,13 +78,35 @@ jQuery(document).ready(function ($) {
     // Close modal if clicking outside modal content
     $(window).on('click', function (event) {
         if ($(event.target).is(".createPetModal")) {
-            $(".createPetModal").fadeOut(); // Hide modal
+            $(".createPetModal").fadeOut(); 
         }
     });
 
     $(document).on('change', "input[name='pet_gender']", function () {
         $(".gender-group label").removeClass('active');
         $(this).closest(".gender-group").find("label").addClass('active');
+    });
+
+
+    // Preview image before upload
+    $(document).on('change', '#profile', function () {
+        const file = this.files[0];
+        // Ensure the file is selected and it’s an image
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                // Set the preview image src and display it
+                $('#preview-img').attr('src', e.target.result).show();
+            };
+            // Read the file as a data URL
+            reader.readAsDataURL(file);
+        } else {
+            // If not an image, hide the preview and reset the file input
+            $('#preview-img').hide();
+            alert('Please select a valid image file.');
+            $(this).val(''); // Reset the input value
+        }
+    
     });
 
 
