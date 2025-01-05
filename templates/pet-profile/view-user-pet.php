@@ -6,8 +6,12 @@
 
         <?php if ($pet_profile->cover_photo) : ?>
             <div class="w-full preview-header">
-                <img src="<?php echo $pet_profile->cover_photo;?>" alt="cat banner" class="banner-img mobile-banner">
-                <img src="<?php echo $pet_profile->cover_photo;?>" alt="cat banner" class="banner-img desktop-banner">
+                <a class="example-image-link" href="<?php echo $pet_profile->cover_photo; ?>" data-lightbox="mobile-banner">
+                    <img src="<?php echo $pet_profile->cover_photo; ?>" alt="cat banner" class="banner-img mobile-banner">
+                </a>
+                <a class="example-image-link" href="<?php echo $pet_profile->cover_photo; ?>" data-lightbox="desktop-banner">
+                    <img src="<?php echo $pet_profile->cover_photo; ?>" alt="cat banner" class="banner-img desktop-banner">
+                </a>
             </div>
         <?php endif; ?>
         <!-- Upload Cover Photo end -->
@@ -17,7 +21,9 @@
             <div class="w-full px-2 -mt-5 mt-0">
                 <div class="container">
                     <div class="text-start profile-pic-area">
-                        <img src="<?php echo $pet_profile->profile_picture;?>" alt="Profile-pic">
+                        <a class="example-image-link" style="display: block; width: 100%; height: 100%" href="<?php echo $pet_profile->profile_picture; ?>" data-lightbox="Profile-pic">
+                            <img src="<?php echo $pet_profile->profile_picture; ?>" alt="Profile-pic">
+                        </a>
                     </div>
                 </div>
             </div>
