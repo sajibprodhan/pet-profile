@@ -1,7 +1,7 @@
 <div>
 
-    <?php if (isset($_GET['action']) && $_GET['action'] == 'edit') : ?>
-        <?php include $this->plugin_path . 'templates/pet-profile/user-pet-profile.php'; ?>
+    <?php if ( isset( $_GET['action'] ) && $_GET['action'] == 'edit' ) : ?>
+        <?php include $this->plugin_path . 'templates/pet-profile/user-pet-profile.php';?>
     <?php else: ?>
 
         <?php if ($pet_profile->cover_photo) : ?>
@@ -37,7 +37,7 @@
                     <div class="form-left">
                         <div class="name-flex">
                             <h3 class="pet-title-name">Whisker</h3>
-                            <a href="<?php echo site_url("pet-profile/" . $pet_profile->id); ?>">Edit Proofile</a>
+                            <a href="<?php echo site_url("pet-profile/". $pet_profile->id) ;?>">Edit Proofile</a>
                         </div>
                         <?php if ($pet_profile->about) : ?>
                             <div class="about-pet">
@@ -60,43 +60,68 @@
                                     About Pet :
                                 </p>
                                 <div>
-                                    <?php echo $pet_profile->about; ?>
+                                    <?php echo $pet_profile->about ;?>
                                 </div>
                             <?php endif; ?>
+                        </div>
+                        <div class="form-group">
+                            <div class="pet-gender">
+                                <?php if ($pet_profile->gender) : ?>
+                                    <div class="gender-group">
+                                        <label for="male" class="active"><?php echo ucfirst($pet_profile->gender) ;?></label>
+                                    </div>
+                                <?php endif; ?>
+                                <?php if ($pet_profile->age) : ?>
+                                    <div class="gender-group">
+                                        <label for="male" class="active"><?php echo $pet_profile->age;?> Years</label>
+                                    </div>
+                                <?php endif; ?>
                             </div>
-                            <div class="form-group">
-                                <div class="pet-gender">
-                                    <?php if ($pet_profile->gender) : ?>
-                                        <div class="gender-group">
-                                            <label for="male" class="active"><?php echo ucfirst($pet_profile->gender); ?></label>
-                                        </div>
-                                    <?php endif; ?>
-                                    <?php if ($pet_profile->age) : ?>
-                                        <div class="gender-group">
-                                            <label for="male" class="active"><?php echo $pet_profile->age; ?> Years</label>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
+                        </div>
 
-                            <?php if ($pet_profile->gallery) : ?>
-                                <div class="form-group">
-                                    <label for="pet-age" class="normal-label">Pictures</label>
-                                    <div class="pictures-group">
-                                        <!-- box -->
-                                        <?php
+                        <?php if ($pet_profile->pet_breed) : ?>
+                            <div class="form-group">
+                                <label for="pet-breed" class="normal-label">Pet Breed</label>    
+                                <select id="">
+                                    <option value="">Select Breed</option>
+                                    <option value="dog" <?php echo selected($pet_profile->pet_breed, 'dog', false); ?>>Dog</option>
+                                    <option value="cat" <?php echo selected($pet_profile->pet_breed, 'cat', false); ?>>Cat</option>
+                                    <option value="rabbit" <?php echo selected($pet_profile->pet_breed, 'rabbit', false); ?>>Rabbit</option>
+                                    <option value="others" <?php echo selected($pet_profile->pet_breed, 'others', false); ?> >Others</option>
+                                </select>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if ($pet_profile->pet_type) : ?>
+                            <div class="form-group">
+                                <label for="pet-type" class="normal-label">Pet Type</label>    
+                                <select>
+                                    <option value="">Select Type</option>
+                                    <option value="breed1" <?php echo selected($pet_profile->pet_type, 'breed1', false); ?>>Breed1</option>
+                                    <option value="breed2" <?php echo selected($pet_profile->pet_type, 'breed2', false); ?>>Breed1</option>
+                                    <option value="breed3" <?php echo selected($pet_profile->pet_type, 'breed3', false); ?>>Breed1</option>
+                                </select>
+                            </div>
+                         <?php endif; ?>
+
+                        <?php if ($pet_profile->gallery) : ?>
+                            <div class="form-group">
+                                <label for="pet-age" class="normal-label">Pictures</label>
+                                <div class="pictures-group">
+                                    <!-- box -->
+                                    <?php
                                         $gallery = explode(",", $pet_profile->gallery);
                                         foreach ($gallery as $picture) {
                                             $picture = trim($picture);
-                                        ?>
+                                            ?>
                                             <div class="picture-box">
                                                 <img src="<?php echo esc_url($picture); ?>" alt="Pet Picture">
                                             </div>
-                                        <?php
+                                            <?php
                                         }
-                                        ?>
-
-                                        <!-- <div class="picture-box">
+                                    ?>
+                                
+                                    <!-- <div class="picture-box">
                                         <label for="picture-3">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -106,34 +131,34 @@
                                         </label>
                                         <input type="file" name="picture-3" id="picture-3" class="sr-only">
                                     </div> -->
-                                        <!-- box -->
-                                    </div>
+                                    <!-- box -->
                                 </div>
-                            <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
                     <div class="preview-right">
                         <div class="name-box">
                             <?php if ($pet_profile->owner_name) : ?>
                                 <div class="left">
-                                    <h5><?php echo ucfirst($pet_profile->owner_name); ?></h5>
+                                    <h5><?php echo ucfirst($pet_profile->owner_name) ;?></h5>
                                     <p>Pet Owner</p>
                                 </div>
                             <?php endif; ?>
                             <div class="left">
                                 <ul>
                                     <?php if ($pet_profile->facebook) : ?>
-                                        <li>
-                                            <a target="_blank" href="<?php echo esc_url($pet_profile->facebook); ?>">
-                                                <img src="<?php echo $this->plugin_url; ?>assets/images/facebook.png" alt="icon">
-                                            </a>
-                                        </li>
+                                    <li>
+                                        <a target="_blank" href="<?php echo esc_url($pet_profile->facebook) ;?>">
+                                            <img src="<?php echo $this->plugin_url ; ?>assets/images/facebook.png" alt="icon">
+                                        </a>
+                                    </li>
                                     <?php endif; ?>
                                     <?php if ($pet_profile->whatsapp_id) : ?>
-                                        <li>
-                                            <a target="_blank" href="<?php echo esc_url($pet_profile->whatsapp_id); ?>">
-                                                <img src="<?php echo $this->plugin_url; ?>assets/images/call-icon.png" alt="icon">
-                                            </a>
-                                        </li>
+                                    <li>
+                                        <a target="_blank" href="<?php echo esc_url($pet_profile->whatsapp_id) ;?>">
+                                            <img src="<?php echo $this->plugin_url ; ?>assets/images/call-icon.png" alt="icon">
+                                        </a>
+                                    </li>
                                     <?php endif; ?>
                                 </ul>
                             </div>
@@ -156,7 +181,7 @@
 
                                             Location
                                         </h6>
-                                        <p><?php echo $pet_profile->location; ?></p>
+                                        <p><?php echo $pet_profile->location ;?></p>
                                     </div>
                                 <?php endif; ?>
                                 <?php if ($pet_profile->mobile) : ?>
@@ -167,7 +192,7 @@
                                             </svg>
                                             Mobile
                                         </h6>
-                                        <p><?php echo $pet_profile->mobile; ?></p>
+                                        <p><?php echo $pet_profile->mobile ;?></p>
                                     </div>
                                 <?php endif; ?>
                             </div>
@@ -180,16 +205,16 @@
                             <div class="vaccine-status">
                                 <?php if ($pet_profile->vaccine_name && $pet_profile->vaccine_date) : ?>
                                     <h5>
-                                        <svg class="vaccine-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="3" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                        <svg class="vaccine-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" 
+                                        stroke-width="3" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                                         </svg>
 
                                         <?php echo $pet_profile->vaccine_name; ?>
                                         <span>
-                                            <?php
-                                            $date = new DateTime($pet_profile->vaccine_date);
-                                            echo $date->format('d M Y');
+                                            <?php 
+                                                $date = new DateTime($pet_profile->vaccine_date);
+                                                echo $date->format('d M Y'); 
                                             ?>
                                         </span>
                                     </h5>
@@ -198,14 +223,14 @@
                                 <?php if ($pet_profile->vaccine_name_2 && $pet_profile->vaccine_date_2) : ?>
                                     <h5>
                                         <svg class="vaccine-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                                         </svg>
 
                                         <?php echo $pet_profile->vaccine_name_2; ?>
-                                        <span>
-                                            <?php
-                                            $date = new DateTime($pet_profile->vaccine_date_2);
-                                            echo $date->format('d M Y');
+                                        <span> 
+                                            <?php 
+                                                $date = new DateTime($pet_profile->vaccine_date_2);
+                                                echo $date->format('d M Y'); 
                                             ?>
                                         </span>
                                     </h5>
@@ -214,17 +239,15 @@
 
                         <?php endif; ?>
 
-
-
                         <?php if ($pet_profile->user_id == get_current_user_id()) : ?>
                             <div class="edit-pro-bttn">
-                                <a href="<?php echo site_url("pet-profile/" . $pet_profile->identifier . "/?action=edit"); ?>">Edit Proofile</a>
+                                <a href="<?php echo site_url("pet-profile/". $pet_profile->identifier ."/?action=edit") ;?>">Edit Proofile</a>
                             </div>
                         <?php endif; ?>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- form inputs -->
-    <?php endif; ?>
+    <!-- form inputs -->
+    <?php endif;?>
 </div>

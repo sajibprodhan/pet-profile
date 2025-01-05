@@ -88,101 +88,134 @@ jQuery(document).ready(function ($) {
     });
 
 
-    // Preview image before upload
-    $(document).on('change', '#profile', function () {
-        const file = this.files[0];
-        // Ensure the file is selected and it’s an image
+
+
+
+
+    // Preview cover photo before upload
+    const $coverPhotoInput = $('#cover_photo');
+    const $headerArea = $('.header-area');
+
+    $coverPhotoInput.on('change', function (event) {
+        const file = event.target.files[0];
         if (file && file.type.startsWith('image/')) {
             const reader = new FileReader();
             reader.onload = function (e) {
-                // Set the preview image src and display it
-                $('#preview-img').attr('src', e.target.result).show();
+                $headerArea.css('background-image', `url('${e.target.result}')`);
+                $headerArea.addClass('preview-header has-cover');
             };
-            // Read the file as a data URL
+
             reader.readAsDataURL(file);
         } else {
-            // If not an image, hide the preview and reset the file input
-            $('#preview-img').hide();
-            alert('Please select a valid image file.');
-            $(this).val(''); // Reset the input value
+            alert('Please upload a valid image file.');
         }
+    });
 
+
+
+
+    // Preview profile image before upload
+    const $profileInput = $('#profile');
+    const $profileLabel = $('.profile-pic-area');
+    let $profilePreview = $('#profilePreview');
+
+    $profileInput.on('change', function (event) {
+        const file = event.target.files[0];
+
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                if (!$profilePreview.length) {
+                    $profilePreview = $('<img>', {
+                        id: 'profilePreview',
+                        alt: 'Uploaded Profile Picture'
+                    });
+
+                    const $uploadIcon = $profileLabel.find('.upload-avatar-icon').parent();
+                    $profileLabel.prepend($profilePreview);
+                }
+
+                $profilePreview.attr('src', e.target.result);
+
+                const $uploadIcon = $profileLabel.find('.upload-avatar-icon');
+                if ($uploadIcon.length) {
+                    $uploadIcon.show();
+                }
+            };
+
+            reader.readAsDataURL(file);
+        } else {
+            alert('Please upload a valid image file.');
+            if ($profilePreview.length) {
+                $profilePreview.remove();
+                $profilePreview = $();
+            }
+        }
     });
 
 });
 
 // cover photo upload preview
+// document.addEventListener('DOMContentLoaded', function () {
+//     const coverPhotoInput = document.getElementById('cover_photo');
+//     const headerArea = document.querySelector('.header-area');
 
-document.addEventListener('DOMContentLoaded', function () {
-    const coverPhotoInput = document.getElementById('cover_photo');
-    const headerArea = document.querySelector('.header-area');
-
-    coverPhotoInput.addEventListener('change', function (event) {
-        const file = event.target.files[0];
-        if (file && file.type.startsWith('image/')) {
-            const reader = new FileReader();
-
-            reader.onload = function (e) {
-                // Set the uploaded image as the background
-                headerArea.style.backgroundImage = `url('${e.target.result}')`;
-                headerArea.classList.add('preview-header', 'has-cover');
-            };
-
-            // Read the image file as a data URL
-            reader.readAsDataURL(file);
-        } else {
-            alert('Please upload a valid image file.');
-        }
-    });
-});
+//     coverPhotoInput.addEventListener('change', function (event) {
+//         const file = event.target.files[0];
+//         if (file && file.type.startsWith('image/')) {
+//             const reader = new FileReader();
+//             reader.onload = function (e) {
+//                 headerArea.style.backgroundImage = `url('${e.target.result}')`;
+//                 headerArea.classList.add('preview-header', 'has-cover');
+//             };
+//             reader.readAsDataURL(file);
+//         } else {
+//             alert('Please upload a valid image file.');
+//         }
+//     });
+// });
 
 // upload profile picture
-document.addEventListener('DOMContentLoaded', function () {
-    const profileInput = document.getElementById('profile'); // File input element
-    const profileLabel = document.querySelector('.profile-pic-area'); // Profile label area
-    let profilePreview = document.getElementById('profilePreview'); // Existing preview image (if any)
+// document.addEventListener('DOMContentLoaded', function () {
+//     const profileInput = document.getElementById('profile');
+//     const profileLabel = document.querySelector('.profile-pic-area');
+//     let profilePreview = document.getElementById('profilePreview');
 
-    profileInput.addEventListener('change', function (event) {
-        const file = event.target.files[0]; // Get the uploaded file
+//     profileInput.addEventListener('change', function (event) {
+//         const file = event.target.files[0];
 
-        if (file && file.type.startsWith('image/')) {
-            const reader = new FileReader(); // FileReader to read the image
+//         if (file && file.type.startsWith('image/')) {
+//             const reader = new FileReader();
 
-            reader.onload = function (e) {
-                // Create or update the preview image
-                if (!profilePreview) {
-                    // If the image preview doesn't exist, create it
-                    const viewProfilePictureDiv = document.createElement('div');
-                    viewProfilePictureDiv.classList.add('view-profile-picture');
+//             reader.onload = function (e) {
+//                 if (!profilePreview) {
+//                     const viewProfilePictureDiv = document.createElement('div');
+//                     viewProfilePictureDiv.classList.add('view-profile-picture');
 
-                    profilePreview = document.createElement('img');
-                    profilePreview.id = 'profilePreview';
-                    profilePreview.alt = 'Uploaded Profile Picture';
-                    // viewProfilePictureDiv.appendChild(profilePreview);
+//                     profilePreview = document.createElement('img');
+//                     profilePreview.id = 'profilePreview';
+//                     profilePreview.alt = 'Uploaded Profile Picture';
 
-                    // Insert the new preview before the SVG icon
-                    const uploadIcon = profileLabel.querySelector('.upload-avatar-icon').parentElement;
-                    profileLabel.insertBefore(profilePreview, uploadIcon);
-                }
+//                     const uploadIcon = profileLabel.querySelector('.upload-avatar-icon').parentElement;
+//                     profileLabel.insertBefore(profilePreview, uploadIcon);
+//                 }
 
-                // Update the preview image source
-                profilePreview.src = e.target.result;
+//                 profilePreview.src = e.target.result;
 
-                // Ensure the SVG upload icon remains visible
-                const uploadIcon = profileLabel.querySelector('.upload-avatar-icon');
-                if (uploadIcon) {
-                    uploadIcon.style.display = 'block';
-                }
-            };
+//                 const uploadIcon = profileLabel.querySelector('.upload-avatar-icon');
+//                 if (uploadIcon) {
+//                     uploadIcon.style.display = 'block';
+//                 }
+//             };
 
-            reader.readAsDataURL(file); // Read the file
-        } else {
-            // Handle invalid file type
-            alert('Please upload a valid image file.');
-            if (profilePreview) {
-                profilePreview.remove(); // Remove the preview if invalid file is uploaded
-                profilePreview = null;
-            }
-        }
-    });
-});
+//             reader.readAsDataURL(file);
+//         } else {
+//             alert('Please upload a valid image file.');
+//             if (profilePreview) {
+//                 profilePreview.remove();
+//                 profilePreview = null;
+//             }
+//         }
+//     });
+// });

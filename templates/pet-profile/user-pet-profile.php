@@ -60,6 +60,7 @@ $pet_profile    = $wpdb->get_row($query);
                             <label for="pet-name" class="normal-label">Pet Name</label>
                             <input type="text" placeholder="Enter pet name" id="pet-name" name="pet_name" value="<?php echo $pet_profile->name ?? ''; ?>">
                         </div>
+                        
                         <div class="form-group">
                             <label for="pet-age" class="normal-label">Pet Age</label>
                             <input type="text" placeholder="Enter pet name" id="pet-age" name="pet_age">
@@ -75,7 +76,7 @@ $pet_profile    = $wpdb->get_row($query);
                                         id="male"
                                         value="male"
                                         class="sr-only"
-                                        <?php echo isset($pet_profile->gender) ? selected($pet_profile->gender, 'male', false) : ''; ?>>
+                                        <?php echo isset($pet_profile->gender) ? checked($pet_profile->gender, 'male') : ''; ?>>
                                 </div>
 
                                 <div class="gender-group">
@@ -86,10 +87,31 @@ $pet_profile    = $wpdb->get_row($query);
                                         id="female"
                                         value="female"
                                         class="sr-only"
-                                        <?php echo isset($pet_profile->gender) ? selected($pet_profile->gender, 'female', false) : ''; ?>>
+                                        <?php echo isset($pet_profile->gender) ? checked($pet_profile->gender, 'female') : ''; ?>>
                                 </div>
 
                             </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pet-breed" class="normal-label">Pet Breed</label>    
+                            <select name="pet_breed" id="">
+                                <option value="">Select Breed</option>
+                                <option value="dog" <?php echo selected($pet_profile->pet_breed, 'dog', false); ?>>Dog</option>
+                                <option value="cat" <?php echo selected($pet_profile->pet_breed, 'cat', false); ?>>Cat</option>
+                                <option value="rabbit" <?php echo selected($pet_profile->pet_breed, 'rabbit', false); ?>>Rabbit</option>
+                                <option value="others" <?php echo selected($pet_profile->pet_breed, 'others', false); ?> >Others</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pet-type" class="normal-label">Pet Type</label>    
+                            <select name="pet_type" id="">
+                                <option value="">Select Type</option>
+                                 <option value="breed1" <?php echo selected($pet_profile->pet_type, 'breed1', false); ?>>Breed1</option>
+                                <option value="breed2" <?php echo selected($pet_profile->pet_type, 'breed2', false); ?>>Breed1</option>
+                                <option value="breed3" <?php echo selected($pet_profile->pet_type, 'breed3', false); ?>>Breed1</option>
+                            </select>
                         </div>
 
                         <div class="form-group">

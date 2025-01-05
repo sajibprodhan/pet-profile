@@ -24,6 +24,8 @@ class Giopio_Pet_Profile {
             name VARCHAR(255) DEFAULT NULL,
             age INT(11) DEFAULT NULL,
             gender VARCHAR(10) DEFAULT NULL,
+            pet_breed VARCHAR(100) DEFAULT NULL,
+            pet_type VARCHAR(100) DEFAULT NULL,
             about TEXT DEFAULT NULL,
             owner_name VARCHAR(255) DEFAULT NULL,
             mobile VARCHAR(50) DEFAULT NULL,
