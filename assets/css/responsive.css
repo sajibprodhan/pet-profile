@@ -5,9 +5,7 @@
 
 /* Extra large devices (large desktops, 1200px and up) */
 @media (min-width: 1200px) {
-    .header-area {
-        padding: 100px 0px;
-    }
+     
 
     .header-title {
         font-size: 18px;
