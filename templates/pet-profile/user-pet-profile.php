@@ -75,7 +75,7 @@ $pet_profile    = $wpdb->get_row($query);
                                         id="male"
                                         value="male"
                                         class="sr-only"
-                                        <?php echo isset($pet_profile->gender) ? selected($pet_profile->gender, 'male', false) : ''; ?>>
+                                        <?php echo isset($pet_profile->gender) ? checked($pet_profile->gender, 'male') : ''; ?>>
                                 </div>
 
                                 <div class="gender-group">
@@ -86,7 +86,7 @@ $pet_profile    = $wpdb->get_row($query);
                                         id="female"
                                         value="female"
                                         class="sr-only"
-                                        <?php echo isset($pet_profile->gender) ? selected($pet_profile->gender, 'female', false) : ''; ?>>
+                                        <?php echo isset($pet_profile->gender) ? checked($pet_profile->gender, 'female') : ''; ?>>
                                 </div>
 
                             </div>

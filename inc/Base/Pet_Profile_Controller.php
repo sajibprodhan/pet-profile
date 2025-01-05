@@ -403,8 +403,8 @@ class Pet_Profile_Controller extends Base_Controller {
             'vaccine_name_2'  => $pet_vaccine_name_2 ?: $profile->vaccine_name_2,
             'vaccine_date_2'  => $pet_vaccine_date_2 ?: $profile->vaccine_date_2,
             'about'           => sanitize_textarea_field($_POST['pet_about'] ?: $profile->about),
-            'cover_photo'     => $this->handle_file_upload('cover_photo', $pet_profile_id),
-            'profile_picture' => $this->handle_file_upload('profile_picture', $pet_profile_id),
+            'cover_photo'     => $this->handle_file_upload('cover_photo', $pet_profile_id) ?: $profile->cover_photo,
+            'profile_picture' => $this->handle_file_upload('profile_picture', $pet_profile_id) ?: $profile->profile_picture,
             'gallery'         => $this->handle_file_uploads('pet_gallery', $pet_profile_id) ?: null,
         ];
 
@@ -484,7 +484,6 @@ class Pet_Profile_Controller extends Base_Controller {
         global $wpdb;
         $table_name = $wpdb->prefix . 'giopio_pet_profile';
         $result = $wpdb->get_var($wpdb->prepare("SELECT {$field_name} FROM {$table_name} WHERE identifier = %d", $pet_profile_id));
-
         return $result ? $result : '';
     }
 
