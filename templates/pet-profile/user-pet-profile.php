@@ -60,6 +60,7 @@ $pet_profile    = $wpdb->get_row($query);
                             <label for="pet-name" class="normal-label">Pet Name</label>
                             <input type="text" placeholder="Enter pet name" id="pet-name" name="pet_name" value="<?php echo $pet_profile->name ?? ''; ?>">
                         </div>
+                        
                         <div class="form-group">
                             <label for="pet-age" class="normal-label">Pet Age</label>
                             <input type="text" placeholder="Enter pet name" id="pet-age" name="pet_age">
