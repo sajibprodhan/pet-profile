@@ -145,12 +145,14 @@ class Pet_Profile_Controller extends Base_Controller {
         global $wpdb;
         if ( !empty( $_GET['search'] ) ) {
             $search = sanitize_text_field( $_GET['search'] );
+
+            $search_pattern = '%' . $wpdb->esc_like( $search ) . '%';
             return $wpdb->prepare(
                 "WHERE name LIKE %s OR location LIKE %s OR mobile LIKE %s OR owner_name LIKE %s",
-                '%' . $wpdb->esc_like( $search ) . '%',
-                '%' . $wpdb->esc_like( $search ) . '%',
-                '%' . $wpdb->esc_like( $search ) . '%',
-                '%' . $wpdb->esc_like( $search ) . '%'
+                $search_pattern,
+                $search_pattern,
+                $search_pattern,
+                $search_pattern
             );
         }
         return '';
@@ -522,13 +524,13 @@ class Pet_Profile_Controller extends Base_Controller {
     }
 
     private function display_pet_profile($pet_profile) {
-        get_header();
+        // get_header();
         if ($pet_profile->name) {
             include $this->plugin_path . 'templates/pet-profile/view-user-pet.php';
         } else {
             include $this->plugin_path . 'templates/pet-profile/user-pet-profile.php';
         }
-        get_footer();
+        // get_footer();
         exit;
     }
 
