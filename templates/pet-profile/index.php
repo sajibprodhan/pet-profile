@@ -9,6 +9,8 @@
         <button type="button" class="page-title-action createNewPetButton addPetButton">Create New Pet</button>
     </div>
 
+    
+
     <!-- Search Form -->
     <form method="get" action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>" class="admin-search-form">
         <input type="hidden" name="page" value="pet_profile" />

@@ -25,6 +25,7 @@ class Enqueue extends Base_Controller {
 
         // Enqueue CSS files
         wp_enqueue_style( 'petprofile-style', $this->plugin_url . 'assets/admin/css/pet-profile.css', array(), time() );
+        
 
         // Enqueue custom admin scripts
         wp_enqueue_script( 'qrcode-lib', 'https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js', array(), null, true );
@@ -46,9 +47,11 @@ class Enqueue extends Base_Controller {
         }
         
 		wp_enqueue_style( 'style-css', $this->plugin_url . 'assets/css/style.css', array(),  time() );
+        wp_enqueue_style( 'lightbox-style', $this->plugin_url . 'assets/css/lightbox.min.css', array(), time() );
         wp_enqueue_style( 'responsive-css', $this->plugin_url . 'assets/css/responsive.css', array(),  time() );
 
         wp_enqueue_script( 'petprofile-script', $this->plugin_url . 'assets/admin/js/pet-profile.js', array( 'jquery' ), time(), true );
+        wp_enqueue_script( 'lightbox-script', $this->plugin_url . 'assets/js/lightbox.min.js', array( 'jquery' ), time(), true );
 
 	}
 }
