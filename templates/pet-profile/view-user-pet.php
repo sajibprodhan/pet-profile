@@ -73,6 +73,31 @@
                             </div>
                         </div>
 
+                        <?php if ($pet_profile->pet_breed) : ?>
+                            <div class="form-group">
+                                <label for="pet-breed" class="normal-label">Pet Breed</label>    
+                                <select id="">
+                                    <option value="">Select Breed</option>
+                                    <option value="dog" <?php echo selected($pet_profile->pet_breed, 'dog', false); ?>>Dog</option>
+                                    <option value="cat" <?php echo selected($pet_profile->pet_breed, 'cat', false); ?>>Cat</option>
+                                    <option value="rabbit" <?php echo selected($pet_profile->pet_breed, 'rabbit', false); ?>>Rabbit</option>
+                                    <option value="others" <?php echo selected($pet_profile->pet_breed, 'others', false); ?> >Others</option>
+                                </select>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if ($pet_profile->pet_type) : ?>
+                            <div class="form-group">
+                                <label for="pet-type" class="normal-label">Pet Type</label>    
+                                <select>
+                                    <option value="">Select Type</option>
+                                    <option value="breed1" <?php echo selected($pet_profile->pet_type, 'breed1', false); ?>>Breed1</option>
+                                    <option value="breed2" <?php echo selected($pet_profile->pet_type, 'breed2', false); ?>>Breed1</option>
+                                    <option value="breed3" <?php echo selected($pet_profile->pet_type, 'breed3', false); ?>>Breed1</option>
+                                </select>
+                            </div>
+                         <?php endif; ?>
+
                         <?php if ($pet_profile->gallery) : ?>
                             <div class="form-group">
                                 <label for="pet-age" class="normal-label">Pictures</label>

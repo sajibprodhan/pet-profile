@@ -68,7 +68,11 @@ class Pet_Profile_Controller extends Base_Controller {
         $table_name   = $wpdb->prefix . 'giopio_pet_profile';
         $search_query = $this->get_search_query();
 
-        $results = $wpdb->get_results( "SELECT * FROM $table_name $search_query ORDER BY created_at DESC", ARRAY_A );
+        $results = $wpdb->get_results(
+            "SELECT p.*, u.user_email FROM $table_name p 
+            LEFT JOIN {$wpdb->users} u ON p.user_id = u.ID " . $this->get_search_query() . " 
+            ORDER BY p.created_at DESC"
+        );
 
         $this->handle_bulk_action( $results );
 
@@ -112,6 +116,8 @@ class Pet_Profile_Controller extends Base_Controller {
                 'name'           => sanitize_text_field( $_POST['name'] ),
                 'age'            => sanitize_text_field( $_POST['age'] ),
                 'gender'         => sanitize_text_field( $_POST['gender'] ),
+                'pet_breed'      => sanitize_text_field( $_POST['pet_breed'] ),
+                'pet_type'       => sanitize_text_field( $_POST['pet_type'] ),
                 'about'          => sanitize_textarea_field( $_POST['about'] ),
                 'owner_name'     => sanitize_text_field( $_POST['owner_name'] ),
                 'mobile'         => sanitize_text_field( $_POST['mobile'] ),
@@ -148,7 +154,9 @@ class Pet_Profile_Controller extends Base_Controller {
 
             $search_pattern = '%' . $wpdb->esc_like( $search ) . '%';
             return $wpdb->prepare(
-                "WHERE name LIKE %s OR location LIKE %s OR mobile LIKE %s OR owner_name LIKE %s",
+                "WHERE (p.name LIKE %s OR p.location LIKE %s OR p.mobile LIKE %s OR p.owner_name LIKE %s 
+                OR (u.user_email LIKE %s AND p.user_id IS NOT NULL))",
+                $search_pattern,
                 $search_pattern,
                 $search_pattern,
                 $search_pattern,
@@ -277,6 +285,8 @@ class Pet_Profile_Controller extends Base_Controller {
                 'name'           => NULL,
                 'age'            => NULL,
                 'gender'         => NULL,
+                'pet_breed'      => NULL,
+                'pet_type'      => NULL,
                 'about'          => NULL,
                 'owner_name'     => NULL,
                 'mobile'         => NULL,
@@ -381,6 +391,8 @@ class Pet_Profile_Controller extends Base_Controller {
             'name'            => sanitize_text_field($_POST['pet_name'] ?: $profile->name),
             'age'             => intval($_POST['pet_age'] ?: $profile->age),
             'gender'          => sanitize_text_field($_POST['pet_gender'] ?: $profile->gender),
+            'pet_breed'       => sanitize_text_field($_POST['pet_breed'] ?: $profile->pet_breed),
+            'pet_type'        => sanitize_text_field($_POST['pet_type'] ?: $profile->pet_type),
             'owner_name'      => sanitize_text_field($_POST['pet_owner_name'] ?: $profile->owner_name),
             'mobile'          => sanitize_text_field($_POST['pet_mobile'] ?: $profile->mobile),
             'location'        => sanitize_text_field($_POST['pet_location'] ?: $profile->location),
@@ -457,16 +469,15 @@ class Pet_Profile_Controller extends Base_Controller {
             ];
             $upload = wp_handle_upload($file, ['test_form' => false]);
             if (!isset($upload['error']) && isset($upload['url'])) {
-                return $upload['url']; // New image uploaded, return the new URL
+                return $upload['url'];
             }
         }
 
-        // If no new image is uploaded, return the existing image if updating
         if ($pet_profile_id) {
             return $this->get_existing_image($field_name, $pet_profile_id);
         }
 
-        return ''; // Return empty if no image and no pet profile id
+        return '';
     }
 
     private function get_existing_image($field_name, $pet_profile_id) {
@@ -524,13 +535,13 @@ class Pet_Profile_Controller extends Base_Controller {
     }
 
     private function display_pet_profile($pet_profile) {
-        // get_header();
+        get_header();
         if ($pet_profile->name) {
             include $this->plugin_path . 'templates/pet-profile/view-user-pet.php';
         } else {
             include $this->plugin_path . 'templates/pet-profile/user-pet-profile.php';
         }
-        // get_footer();
+        get_footer();
         exit;
     }
 

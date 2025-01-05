@@ -170,7 +170,8 @@ body {
 
 .form-group textarea,
 .form-group input[type="text"],
-.form-group input[type="date"]
+.form-group input[type="date"],
+.form-group select
 {
     width: 100%;
     display: block;
